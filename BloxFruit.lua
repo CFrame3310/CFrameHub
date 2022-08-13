@@ -16,12 +16,17 @@ Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhum
 for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
     table.insert(Weapon,v.Name)
 end
+
 AutoFarm:AddToggle("Auto Farm",false,function(t)
     _G.AutoFarm = t
 end)
+
+AutoFarm:AddToggle("Auto Superhuman",false,function(t)
+    _G.AutoSuperhuman = t
+end)
+
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,"",false,function(t)
     _G.SelectWeapon = t
-    print(t)
 end)
 
 SelectSection:AddButton("Refresh Weapon",function()
@@ -82,6 +87,25 @@ end)
 Autostats:AddToggle("Auto Blox Fruit",false,function(t)
     _G.BF = t
 end)
+
+
+spawn(function()
+    while wait() do
+        pcall(function()
+            if _G.AutoSuperhuman then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBlackLeg")
+                wait()
+                _G.SelectWeapon = "Black Leg"
+                if game:GetService("Players").LocalPlayer.Characters["Black Leg"].Level.Value >= 300 or game:GetService("Players").LocalPlayer.Backpack["Black Leg"].Level.Value >= 300 then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectro")
+                    wait()
+                    _G.SelectWeapon = "Electro"
+                end
+            end
+        end)
+    end
+end)
+
 function CheckQuest() 
     local Level = game:GetService("Players").LocalPlayer.Data.Level.Value
     if Level == 1 or Level <= 9 then
@@ -243,15 +267,23 @@ end)
 
 function Tween(P1)
     local Dis = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-        local Speed
-        if Dis < 1000 then
+    local Speed
+    if Dis < 1000 then
         Speed = 300
     elseif Dis >= 100 then
         Speed = 200
     end
-    game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = P1}):Play()
-end
 
+    function DoAfter()
+       game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+    end
+
+    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+
+    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Quad),{CFrame = P1})
+    tween:Play()
+    tween.Completed:Connect(DoAfter)
+end
 spawn(function()
     while task.wait() do
         pcall(function()
@@ -265,7 +297,7 @@ spawn(function()
                         if v.Name == Mon then
                             if v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Humanoid") then
                                 if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -  v.HumanoidRootPart.Position).Magnitude <= 500 then
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,20,-10)
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(20,0,0)
                                 else 
                                     Tween(v.HumanoidRootPart.CFrame)
                                 end
@@ -273,7 +305,7 @@ spawn(function()
                         end
                     end
                 else
-                    Tween(CFrameQuest * CFrame.new(0,20,0))
+                    Tween(CFrameQuest)
                     if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -  CFrameQuest.Position).Magnitude <= 20 then
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest",NQuest,LQuest)
                     end
@@ -320,18 +352,11 @@ while wait() do
     if _G.BringMob then
         for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
         for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
-        v:FindFirstChildOfClass("Part").Transparency = 0.5
-        v:FindFirstChildOfClass("MeshPart").Transparency = 0.5
-        y:FindFirstChildOfClass("Part").Transparency = 0.5
-        y:FindFirstChildOfClass("MeshPart").Transparency = 0.5
             if v.Name == y.Name then
                 v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
-                v.HumanoidRootPart.Size = Vector3.new(60,60,60)
-                y.HumanoidRootPart.Size = Vector3.new(60,60,60)
-                v.HumanoidRootPart.Transparency = 1
-                y.HumanoidRootPart.Transparency = 1
-                v.HumanoidRootPart.CanCollide = false
-                y.HumanoidRootPart.CanCollide = false
+                y.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+                v.HumanoidRootPart.Transparency = 0.5
+                y.HumanoidRootPart.Transparency = 0.5
                 v.Humanoid.WalkSpeed = 0
                 y.Humanoid.WalkSpeed = 0
                 v.Humanoid.JumpPower = 0
@@ -391,6 +416,15 @@ spawn(function()
         end)
     end
 end)
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            setfflag("HumanoidParallelRemoveNoPhysics", "False")
+            setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
+        end)
+    end
+end)
+
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
