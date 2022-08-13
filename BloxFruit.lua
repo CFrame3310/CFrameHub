@@ -336,8 +336,6 @@ while wait() do
                 y.Humanoid.WalkSpeed = 0
                 v.Humanoid.JumpPower = 0
                 y.Humanoid.JumpPower = 0
-                v.HumanoidRootPart.Anchored = true
-                y.HumanoidRootPart.Anchored = true
                 if sethiddenproperty then
                     sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
                 end
