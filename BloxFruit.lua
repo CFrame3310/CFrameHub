@@ -640,7 +640,7 @@ function Tween(P1)
 
     game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
 
-    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Quad),{CFrame = P1})
+    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = P1})
     tween:Play()
     tween.Completed:Connect(DoAfter)
 end
@@ -709,43 +709,6 @@ while wait() do
     end
     task.wait()
 end
-end)
-
-spawn(function()
-    while wait() do
-        pcall(function()
-            if _G.BringMob then
-                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v.Name == y.Name then
-                        v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
-                        y.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-                        v.HumanoidRootPart.Transparency = 0.5
-                        y.HumanoidRootPart.Transparency = 0.5
-                        v.Humanoid.WalkSpeed = 0
-                        y.Humanoid.WalkSpeed = 0
-                        v.Humanoid.JumpPower = 0
-                        y.Humanoid.JumpPower = 0
-                        if sethiddenproperty then
-                            sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
-                        end
-                    end
-                end
-                end
-            end
-        end)
-    end
-end)
-
-spawn(function() -- Auto Attack
-game:GetService("RunService").RenderStepped:Connect(function()
-    if _G.AutoAttack then
-    pcall(function()
-        game:GetService'VirtualUser':CaptureController()
-        game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
-    end)
-    end
-end) 
 end)
 
 spawn(function()
