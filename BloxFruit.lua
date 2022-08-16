@@ -705,7 +705,8 @@ spawn(function()
                     end
                 else
                     Tween(CFrame.new(0,10,0) * CFrameQuest)
-                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -  CFrameQuest.Position).Magnitude <= 15 then
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -  CFrameQuest.Position).Magnitude <= 10 then
+                        wait(1)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest",NQuest,LQuest)
                     end
                 end
