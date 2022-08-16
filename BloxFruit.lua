@@ -1,12 +1,14 @@
 repeat
     wait()
 until game:IsLoaded()
+print("Game is loaded")
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi", true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 --game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Buso")
 local Main = Win:CreateTab("Main")
 local Player = Win:CreateTab("Player")
+local Dungeon = Win:CreateTab("Dungeon")
 
 local AutoFarm = Main:CreateSector("Auto Farm","Left")
 local SelectSection = Main:CreateSector("Select Weapon","Right")
@@ -14,9 +16,14 @@ local Settings = Main:CreateSector("Settings","Right")
 
 local Autostats = Player:CreateSector("Auto Stats","Left")
 
+local Raid = Dungeon:CreateSector("Auto Dungeon","Left")
+local RaidProperty = Dungeon:CreateSector("Dungeon Property","Right")
+
 Weapon = {}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
 Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhuman","Death Step","Sharkman Karate","Dragon Talon"}
+Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: Buddha","Sand","Bird: Phoenix"}
+
 for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
     table.insert(Weapon,v.Name)
 end
@@ -95,6 +102,22 @@ Autostats:AddToggle("Auto Blox Fruit",false,function(t)
     _G.BF = t
 end)
 
+Raid:AddToggle("Auto Raid",false,function(t)
+    _G.AutoRaid = t
+end)
+
+local RaidsChip = RaidProperty:AddDropdown("Select Raid Chip",Chip,"",false,function(t)
+    _G.DunChip = t
+end)
+RaidProperty:AddToggle("Auto Buy Chip",false,function(t)
+    _G.BuyChip = t
+end)
+RaidProperty:AddToggle("Auto Next Island",false,function(t)
+    _G.AutoNextIsland = t
+end)
+RaidProperty:AddToggle("Kill Aura",false,function(t)
+    _G.Killaura = t
+end)
 function Bring()
     if _G.BringMob then
         for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -629,9 +652,9 @@ function Tween(P1)
     local Dis = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
     local Speed
     if Dis < 1000 then
-        Speed = 290
+        Speed = 300
     elseif Dis >= 100 then
-        Speed = 190
+        Speed = 200
     end
 
     function DoAfter()
@@ -640,9 +663,20 @@ function Tween(P1)
 
     game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
 
-    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = P1})
+    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Quad),{CFrame = P1})
     tween:Play()
     tween.Completed:Connect(DoAfter)
+end
+function TweenSe(P1)
+    local Dis = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    local Speed
+    if Dis < 1000 then
+        Speed = 300
+    elseif Dis >= 100 then
+        Speed = 200
+    end
+    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Quad),{CFrame = P1})
+    tween:Play()
 end
 
 spawn(function()
@@ -744,6 +778,70 @@ spawn(function()
         end)
     end
 end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.BuyChip then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("RaidsNpc","Select",_G.DunChip)
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.Killaura then
+                for i,v in pairs(game.Workspace.Enemies:GetDescendants()) do
+                    if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                        pcall(function()
+                            repeat wait(.1)
+                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                                v.Humanoid.Health = 0
+                                v.HumanoidRootPart.CanCollide = false
+                                v.HumanoidRootPart.Size = Vector3.new(50,50,50)
+                                v.HumanoidRootPart.Transparency = 0.8
+                            until not _G.Killaura or not v.Parent or v.Humanoid.Health <= 0
+                        end)
+                    end
+                end
+            end
+        end)
+    end
+end)
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoRaid then
+                if game.Players.LocalPlayer.Backpack:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Character:FindFirstChild("Special Microchip") and game.Players.LocalPlayer.PlayerGui.Main.Timer.Visible == false then
+                    fireclickdetector(game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                end
+            end
+        end)
+    end
+end)
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoNextIsland then
+                local Island = game.Workspace._WorldOrigin.Locations
+                if Island:FindFirstChild("Island 5") then
+                    TweenSe(Island["Island 5"].CFrame * CFrame.new(0,35,0))
+                elseif Island:FindFirstChild("Island 4") then
+                    TweenSe(Island["Island 4"].CFrame * CFrame.new(0,35,0))
+                elseif Island:FindFirstChild("Island 3") then
+                    TweenSe(Island["Island 3"].CFrame * CFrame.new(0,35,0))
+                elseif Island:FindFirstChild("Island 2") then
+                    TweenSe(Island["Island 2"].CFrame * CFrame.new(0,35,0))
+                elseif Island:FindFirstChild("Island 1") then
+                    TweenSe(Island["Island 1"].CFrame * CFrame.new(0,35,0))
+                end
+            end
+        end)
+    end
+end)
+
 spawn(function()
     while task.wait() do
         pcall(function()
