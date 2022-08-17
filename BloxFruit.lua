@@ -169,6 +169,8 @@ spawn(function()
                     _G.SelectWeapon = "Fishman Karate"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Breath") then
                     _G.SelectWeapon = "Dragon Breath"
+                elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Superhuman") then
+                    _G.SelectWeapon = "Superhuman"
                 end
                 for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
                 for x,y in pairs(Melee) do
