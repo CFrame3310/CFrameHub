@@ -2,8 +2,8 @@ repeat
     wait()
 until game:IsLoaded()
 print("Game is loaded")
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi", true))()
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi"))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 --game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Buso")
 local Main = Win:CreateTab("Main")
@@ -39,6 +39,10 @@ end)
 
 AutoFarm:AddToggle("Auto Superhuman",false,function(t)
     _G.AutoSuperhuman = t
+end)
+
+AutoFarm:AddToggle("Auto Saber",false,function(t)
+    _G.AutoSaber = t
 end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,"",false,function(t)
@@ -658,25 +662,6 @@ function Tween(P1)
     elseif Dis >= 100 then
         Speed = 200
     end
-
-    function DoAfter()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-    end
-
-    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
-
-    local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = P1})
-    tween:Play()
-    tween.Completed:Connect(DoAfter)
-end
-function TweenSe(P1)
-    local Dis = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-    local Speed
-    if Dis < 1000 then
-        Speed = 300
-    elseif Dis >= 100 then
-        Speed = 200
-    end
     local tween = game:GetService("TweenService"):Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart,TweenInfo.new(Dis/Speed,Enum.EasingStyle.Linear),{CFrame = P1})
     tween:Play()
 end
@@ -693,23 +678,143 @@ spawn(function()
                     for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                         if v.Name == Mon then
                             if v:FindFirstChild("HumanoidRootPart") then
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
                                 Attack()
                                 EquipTool(_G.SelectWeapon)
-                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -  v.HumanoidRootPart.Position).Magnitude <= 500 then
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(20,0,0)
-                                    Bring()
-                                else 
-                                    Tween(v.HumanoidRootPart.CFrame)
+                                Bring()
+                            end
+                        end
+                    end
+                    for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if y.Name == Mon then
+                            if y:FindFirstChild("HumanoidRootPart") then
+                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - y.HumanoidRootPart.Position).Magnitude >= 100 then
+                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
                                 end
-
                             end
                         end
                     end
                 else
                     Tween(CFrame.new(0,10,0) * CFrameQuest)
-                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position -  CFrameQuest.Position).Magnitude <= 10 then
-                        wait(1)
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 10 then
+                        wait(.5)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest",NQuest,LQuest)
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoSaber then
+                if game.Players.LocalPlayer.Data.Level.Value >= 200 then
+                    local QPlates = game:GetService("Workspace").Map.Jungle.QuestPlates
+                    if QPlates["Plate1"].Button.BrickColor ~= BrickColor.new("Camo") then
+                        Tween(QPlates["Plate1"].Button.CFrame)
+                    elseif QPlates["Plate2"].Button.BrickColor ~= BrickColor.new("Camo") then
+                        Tween(QPlates["Plate2"].Button.CFrame)
+                    elseif QPlates["Plate3"].Button.BrickColor ~= BrickColor.new("Camo") then
+                        Tween(QPlates["Plate3"].Button.CFrame)
+                    elseif QPlates["Plate4"].Button.BrickColor ~= BrickColor.new("Camo") then
+                        Tween(QPlates["Plate4"].Button.CFrame)
+                    elseif QPlates["Plate5"].Button.BrickColor ~= BrickColor.new("Camo") then
+                        Tween(QPlates["Plate5"].Button.CFrame)
+                    end
+                    if game:GetService("Workspace").Map.Jungle.QuestPlates.Door.CanCollide == false and game:GetService("Workspace").Map.Desert.Burn.Part.CanCollide == true then
+                        if not game.Players.LocalPlayer.Backpack:FindFirstChild("Torch") or game.Players.LocalPlayer.Character:FindFirstChild("Torch") then
+                            Tween(CFrame.new(-1610.025634765625, 12.177388191223145, 162.5987091064453))
+                        end
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild("Torch") or game.Players.LocalPlayer.Character:FindFirstChild("Torch") then
+                            EquipTool("Torch")
+                            game:GetService("Workspace").Map.Desert.Burn.Fire.Size = Vector3.new(10,10,10)
+                            game:GetService("Workspace").Map.Desert.Burn.Fire.CanCollide = false
+                            Tween(CFrame.new(1113.6805419921875, 5.046795845031738, 4349.96484375))
+                        end
+                    end
+                    if game:GetService("Workspace").Map.Desert.Burn.Part.CanCollide == false and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","SickMan") ~= 0 then
+                        if not game.Players.LocalPlayer.Backpack:FindFirstChild("Cup") or game.Players.LocalPlayer.Character:FindFirstChild("Cup") then
+                            Tween(CFrame.new(1114.609619140625, 7.24679708480835, 4365.28076171875))
+                        end
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild("Cup") or game.Players.LocalPlayer.Character:FindFirstChild("Cup") then
+                            EquipTool("Cup")
+                            game:GetService("Workspace").Map.Ice.ParticleDrop.Water.Size = Vector3.new(40,40,40)
+                            game:GetService("Workspace").Map.Ice.ParticleDrop.Water.Transparency = 0
+                            Tween(CFrame.new(1397.471435546875, 37.47333908081055, -1321.564208984375))
+                        end
+                    end
+                    if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedCup == false then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","SickMan")
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","RichSon")
+                    end 
+                    if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").TalkedSon == true and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedRelic == false then
+                        for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                            if v.Name == "Mob Leader [Lv. 120] [Boss]" then
+                                if v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Humanoid") then
+                                    Attack()
+                                    EquipTool(_G.SelectWeapon)
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                    v.HumanoidRootPart.Transparency = 0.5
+                                    v.Humanoid.WalkSpeed = 0
+                                    v.Humanoid.JumpPower = 0
+                                    if sethiddenproperty then
+                                        sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
+                                    end
+                                end
+                            end
+                        end
+                        for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                            if y.Name == "Mob Leader [Lv. 120] [Boss]" then
+                                if y:FindFirstChild("HumanoidRootPart") then
+                                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - y.HumanoidRootPart.Position).Magnitude >= 100 then
+                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                    end
+                                end
+                            end
+                        end
+                    else
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","RichSon")
+                    end
+                    if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").KilledMob == true and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedRelic == false then
+                        if not game.Players.LocalPlayer.Backpack:FindFirstChild("Relic") or game.Players.LocalPlayer.Character:FindFirstChild("Relic") then
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","RichSon")
+                            wait(.1)
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress")
+                        end
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild("Relic") or game.Players.LocalPlayer.Character:FindFirstChild("Relic") then
+                            EquipTool("Relic")
+                            game:GetService("Workspace").Map.Jungle.Final.Invis.Size = Vector3.new(20,20,20)
+                            game:GetService("Workspace").Map.Jungle.Final.Invis.CanCollide = false
+                            Tween(CFrame.new(-1407.0384521484375, 29.977327346801758, 4.923530578613281))
+                        end
+                    end
+                    if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedRelic == true and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").KilledShanks == false then
+                        for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                            if v.Name == "Saber Expert [Lv. 200] [Boss]" then
+                                if v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Humanoid") then
+                                    Attack()
+                                    EquipTool(_G.SelectWeapon)
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                    v.HumanoidRootPart.Transparency = 0.5
+                                    v.Humanoid.WalkSpeed = 0
+                                    v.Humanoid.JumpPower = 0
+                                    if sethiddenproperty then
+                                        sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
+                                    end
+                                end
+                            end
+                        end
+                        for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                            if y.Name == "Saber Expert [Lv. 200] [Boss]" then
+                                if y:FindFirstChild("HumanoidRootPart") then
+                                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - y.HumanoidRootPart.Position).Magnitude >= 100 then
+                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                    end
+                                end
+                            end
+                        end
                     end
                 end
             end
@@ -730,7 +835,7 @@ end)
 local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
 local CombatFramework = debug.getupvalues(Module)[2]
 local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
-spawn(function() --Fast Attack
+spawn(function()
 while wait() do
     if _G.FastAttack then
     pcall(function()
@@ -799,7 +904,7 @@ spawn(function()
                 for i,v in pairs(game.Workspace.Enemies:GetDescendants()) do
                     if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
                         pcall(function()
-                            repeat wait(.1)
+                            repeat task.wait()
                                 sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                                 v.Humanoid.Health = 0
                                 v.HumanoidRootPart.CanCollide = false
@@ -830,16 +935,34 @@ spawn(function()
             if _G.AutoNextIsland then
                 local Island = game.Workspace._WorldOrigin.Locations
                 if Island:FindFirstChild("Island 5") then
-                    TweenSe(Island["Island 5"].CFrame * CFrame.new(0,35,0))
+                    Tween(Island["Island 5"].CFrame * CFrame.new(0,35,0))
                 elseif Island:FindFirstChild("Island 4") then
-                    TweenSe(Island["Island 4"].CFrame * CFrame.new(0,35,0))
+                    Tween(Island["Island 4"].CFrame * CFrame.new(0,35,0))
                 elseif Island:FindFirstChild("Island 3") then
-                    TweenSe(Island["Island 3"].CFrame * CFrame.new(0,35,0))
+                    Tween(Island["Island 3"].CFrame * CFrame.new(0,35,0))
                 elseif Island:FindFirstChild("Island 2") then
-                    TweenSe(Island["Island 2"].CFrame * CFrame.new(0,35,0))
+                    Tween(Island["Island 2"].CFrame * CFrame.new(0,35,0))
                 elseif Island:FindFirstChild("Island 1") then
-                    TweenSe(Island["Island 1"].CFrame * CFrame.new(0,35,0))
+                    Tween(Island["Island 1"].CFrame * CFrame.new(0,35,0))
                 end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber then
+                if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+                    local Noclip = Instance.new("BodyVelocity")
+                    Noclip.Name = "BodyClip"
+                    Noclip.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+                    Noclip.MaxForce = Vector3.new(100000,100000,100000)
+                    Noclip.Velocity = Vector3.new(0,0,0)
+                end
+            else
+                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
             end
         end)
     end
