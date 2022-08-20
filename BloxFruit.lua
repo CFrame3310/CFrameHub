@@ -5,10 +5,10 @@ print("Game is loaded")
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi"))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
---game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Buso")
 local Main = Win:CreateTab("Main")
 local Player = Win:CreateTab("Player")
 local Dungeon = Win:CreateTab("Dungeon")
+local ShopMain = Win:CreateTab("Shop")
 
 local AutoFarm = Main:CreateSector("Auto Farm","Left")
 local SelectSection = Main:CreateSector("Select Weapon","Right")
@@ -18,6 +18,8 @@ local Autostats = Player:CreateSector("Auto Stats","Left")
 
 local Raid = Dungeon:CreateSector("Auto Dungeon","Left")
 local RaidProperty = Dungeon:CreateSector("Dungeon Property","Right")
+
+local Shop = ShopMain:CreateSector("Shop","Right")
 
 Weapon = {}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
@@ -39,6 +41,10 @@ end)
 
 AutoFarm:AddToggle("Auto Superhuman",false,function(t)
     _G.AutoSuperhuman = t
+end)
+
+AutoFarm:AddToggle("Auto Sea 2",false,function(t)
+    _G.AutoSea2 = t
 end)
 
 AutoFarm:AddToggle("Auto Saber",false,function(t)
@@ -122,6 +128,19 @@ end)
 RaidProperty:AddToggle("Kill Aura",false,function(t)
     _G.Killaura = t
 end)
+
+Shop:AddButton("Buy Geppo",function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Geppo")
+end)
+
+Shop:AddButton("Buy Buso",function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Buso")
+end)
+
+Shop:AddButton("Buy Soru",function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Soru")
+end)
+
 function Bring()
     if _G.BringMob then
         for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -709,6 +728,45 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
+            if _G.AutoSea2 then
+                if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("DressrosaQuestProgress").UsedKey == false then
+                    if not game.Players.LocalPlayer.Backpack:FindFirstChild("Key") or game.Players.LocalPlayer.Character:FindFirstChild("Key") then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("DressrosaQuestProgress","Detective")
+                    end
+                    if game.Players.LocalPlayer.Backpack:FindFirstChild("Key") or game.Players.LocalPlayer.Character:FindFirstChild("Key") then
+                        EquipTool("Key")
+                        Tween(CFrame.new(1349.697265625, 37.34928512573242, -1328.8309326171875))
+                        game:GetService("Workspace").Map.Ice.Door.Size = Vector3.new(30,30,30)
+                    end
+                end
+                if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("DressrosaQuestProgress").UsedKey == true and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("DressrosaQuestProgress").KilledIceBoss == false then
+                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == "Ice Admiral [Lv. 700] [Boss]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                Attack()
+                                EquipTool(_G.SelectWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(20,30,0))
+                            end
+                        end
+                    end
+                    for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if y.Name == "Ice Admiral [Lv. 700] [Boss]" then
+                            if y:FindFirstChild("HumanoidRootPart") then
+                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - y.HumanoidRootPart.Position).Magnitude >= 100 then
+                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
             if _G.AutoSaber then
                 if game.Players.LocalPlayer.Data.Level.Value >= 200 then
                     local QPlates = game:GetService("Workspace").Map.Jungle.QuestPlates
@@ -752,16 +810,10 @@ spawn(function()
                     if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").TalkedSon == true and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedRelic == false then
                         for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v.Name == "Mob Leader [Lv. 120] [Boss]" then
-                                if v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Humanoid") then
+                                if v:FindFirstChild("HumanoidRootPart") then
                                     Attack()
                                     EquipTool(_G.SelectWeapon)
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
-                                    v.HumanoidRootPart.Transparency = 0.5
-                                    v.Humanoid.WalkSpeed = 0
-                                    v.Humanoid.JumpPower = 0
-                                    if sethiddenproperty then
-                                        sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
-                                    end
                                 end
                             end
                         end
@@ -777,7 +829,7 @@ spawn(function()
                     else
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","RichSon")
                     end
-                    if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").KilledMob == true and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedRelic == false then
+                    if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").UsedRelic == false and game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress").KilledMob == true then
                         if not game.Players.LocalPlayer.Backpack:FindFirstChild("Relic") or game.Players.LocalPlayer.Character:FindFirstChild("Relic") then
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("ProQuestProgress","RichSon")
                             wait(.1)
@@ -953,7 +1005,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 then
                 if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
                     Noclip.Name = "BodyClip"
