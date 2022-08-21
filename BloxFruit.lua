@@ -1039,17 +1039,19 @@ spawn(function()
     while task.wait() do
         pcall(function()
             if _G.AutoNextIsland then
-                local Island = game.Workspace._WorldOrigin.Locations
-                if Island:FindFirstChild("Island 5") then
-                    Tween(Island["Island 5"].CFrame * CFrame.new(0,35,0))
-                elseif Island:FindFirstChild("Island 4") then
-                    Tween(Island["Island 4"].CFrame * CFrame.new(0,35,0))
-                elseif Island:FindFirstChild("Island 3") then
-                    Tween(Island["Island 3"].CFrame * CFrame.new(0,35,0))
-                elseif Island:FindFirstChild("Island 2") then
-                    Tween(Island["Island 2"].CFrame * CFrame.new(0,35,0))
-                elseif Island:FindFirstChild("Island 1") then
-                    Tween(Island["Island 1"].CFrame * CFrame.new(0,35,0))
+                if game.Players.LocalPlayer.PlayerGui.Main.Timer.Visible == true then
+                    local Island = game.Workspace._WorldOrigin.Locations
+                    if Island:FindFirstChild("Island 5") then
+                        Tween(Island["Island 5"].CFrame * CFrame.new(0,35,0))
+                    elseif Island:FindFirstChild("Island 4") then
+                        Tween(Island["Island 4"].CFrame * CFrame.new(0,35,0))
+                    elseif Island:FindFirstChild("Island 3") then
+                        Tween(Island["Island 3"].CFrame * CFrame.new(0,35,0))
+                    elseif Island:FindFirstChild("Island 2") then
+                        Tween(Island["Island 2"].CFrame * CFrame.new(0,35,0))
+                    elseif Island:FindFirstChild("Island 1") then
+                        Tween(Island["Island 1"].CFrame * CFrame.new(0,35,0))
+                    end
                 end
             end
         end)
