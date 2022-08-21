@@ -3,7 +3,7 @@ repeat
 until game:IsLoaded()
 print("Game is loaded")
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 local Main = Win:CreateTab("Main")
 local Player = Win:CreateTab("Player")
@@ -20,6 +20,7 @@ local Raid = Dungeon:CreateSector("Auto Dungeon","Left")
 local RaidProperty = Dungeon:CreateSector("Dungeon Property","Right")
 
 local Shop = ShopMain:CreateSector("Shop","Right")
+local Shop = ShopMain:CreateSector("Haki","Left")
 
 Weapon = {}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
@@ -137,15 +138,22 @@ RaidProperty:AddToggle("Kill Aura",false,function(t)
     _G.Killaura = t
 end)
 
-Shop:AddButton("Buy Geppo",function()
+Shop:AddToggle("Auto Random Fruit",false,function(t)
+    _G.AutoRandom = t
+end)
+Shop:AddButton("Random Fruit",function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin" , "Buy")
+end)
+
+Haki:AddButton("Buy Geppo",function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Geppo")
 end)
 
-Shop:AddButton("Buy Buso",function()
+Haki:AddButton("Buy Buso",function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Buso")
 end)
 
-Shop:AddButton("Buy Soru",function()
+Haki:AddButton("Buy Soru",function()
     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki" , "Soru")
 end)
 
@@ -1043,6 +1051,16 @@ spawn(function()
                 elseif Island:FindFirstChild("Island 1") then
                     Tween(Island["Island 1"].CFrame * CFrame.new(0,35,0))
                 end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoRandom then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin" , "Buy")
             end
         end)
     end
