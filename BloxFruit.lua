@@ -162,17 +162,18 @@ function Bring()
         for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
         for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
             if v.Name == y.Name then
-                v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
-                y.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-                v.HumanoidRootPart.Transparency = 0.5
-                y.HumanoidRootPart.Transparency = 0.5
-                v.Humanoid.WalkSpeed = 0
-                y.Humanoid.WalkSpeed = 0
-                v.Humanoid.JumpPower = 0
-                y.Humanoid.JumpPower = 0
-                if sethiddenproperty then
-                    sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
-                end
+                repeat task.wait()
+                    v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
+                    v.HumanoidRootPart.Transparency = 0.5
+                    y.HumanoidRootPart.Transparency = 0.5
+                    v.Humanoid.WalkSpeed = 0
+                    y.Humanoid.WalkSpeed = 0
+                    v.Humanoid.JumpPower = 0
+                    y.Humanoid.JumpPower = 0
+                    if sethiddenproperty then
+                        sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
+                    end
+                until not _G.BringMob or not v.Parent or v.Humanoid.Health <= 0
             end
         end
         end
@@ -207,7 +208,7 @@ spawn(function()
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Fishman Karate") then
                     _G.SelectWeapon = "Fishman Karate"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Breath") then
-                    _G.SelectWeapon = "Dragon Breath"
+                    _G.SelectWeapon = "Dragon Claw"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Superhuman") then
                     _G.SelectWeapon = "Superhuman"
                 end
@@ -1029,7 +1030,9 @@ spawn(function()
         pcall(function()
             if _G.AutoRaid then
                 if game.Players.LocalPlayer.Backpack:FindFirstChild("Special Microchip") or game.Players.LocalPlayer.Character:FindFirstChild("Special Microchip") and game.Players.LocalPlayer.PlayerGui.Main.Timer.Visible == false then
-                    fireclickdetector(game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                    if not game.Workspace._WorldOrigin.Locations:FindFirstChild("Island 1") then
+                        fireclickdetector(game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                    end
                 end
             end
         end)
