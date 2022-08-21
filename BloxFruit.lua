@@ -19,8 +19,8 @@ local Autostats = Player:CreateSector("Auto Stats","Left")
 local Raid = Dungeon:CreateSector("Auto Dungeon","Left")
 local RaidProperty = Dungeon:CreateSector("Dungeon Property","Right")
 
-local Shop = ShopMain:CreateSector("Shop","Right")
-local Haki = ShopMain:CreateSector("Haki","Left")
+local Shop = ShopMain:CreateSector("Shop","Left")
+local Haki = ShopMain:CreateSector("Haki","Right")
 
 Weapon = {}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
