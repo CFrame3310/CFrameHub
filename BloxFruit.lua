@@ -722,8 +722,8 @@ spawn(function()
                         end
                     end
                 else
-                    Tween(CFrame.new(0,10,0) * CFrameQuest)
-                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 10 then
+                    Tween(CFrame.new(0,5,0) * CFrameQuest)
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrameQuest.Position).Magnitude <= 20 then
                         wait(.5)
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest",NQuest,LQuest)
                     end
@@ -762,7 +762,7 @@ spawn(function()
                     end
                 else
                     Tween(CFrame.new(-461.06024169921875, 73.02008056640625, 300.6614074707031))
-                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrame.new(-461.06024169921875, 73.02008056640625, 300.6614074707031).Position).Magnitude <= 10 then
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrame.new(-461.06024169921875, 73.02008056640625, 300.6614074707031).Position).Magnitude <= 20 then
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest","BartiloQuest",1)
                     end
                 end
