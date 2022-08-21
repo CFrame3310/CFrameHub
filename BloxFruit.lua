@@ -42,14 +42,22 @@ end)
 AutoFarm:AddToggle("Auto Superhuman",false,function(t)
     _G.AutoSuperhuman = t
 end)
+if game.PlaceId == 2753915549 then
+    AutoFarm:AddToggle("Auto Sea 2",false,function(t)
+        _G.AutoSea2 = t
+    end)
 
-AutoFarm:AddToggle("Auto Sea 2",false,function(t)
-    _G.AutoSea2 = t
-end)
+    AutoFarm:AddToggle("Auto Saber",false,function(t)
+        _G.AutoSaber = t
+    end)
+end
 
-AutoFarm:AddToggle("Auto Saber",false,function(t)
-    _G.AutoSaber = t
-end)
+if game.PlaceId == 4442272183 then
+    AutoFarm:AddToggle("Auto Bartilo",false,function(t)
+        _G.AutoBartilo = t
+    end)
+end
+
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,"",false,function(t)
     _G.SelectWeapon = t
@@ -728,6 +736,44 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
+            if _G.AutoBartilo then
+               if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text,"Swan Pirates") then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                end
+                if game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == "Swan Pirate [Lv. 775]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                Bring()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                Attack()
+                                EquipTool(_G.SelectWeapon)
+                            end
+                        end
+                    end
+                    for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if y.Name == "Swan Pirate [Lv. 775]" then
+                            if y:FindFirstChild("HumanoidRootPart") then
+                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - y.HumanoidRootPart.Position).Magnitude >= 100 then
+                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(20,0,0))
+                                end
+                            end
+                        end
+                    end
+                else
+                    Tween(CFrame.new(-461.06024169921875, 73.02008056640625, 300.6614074707031))
+                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - CFrame.new(-461.06024169921875, 73.02008056640625, 300.6614074707031).Position).Magnitude <= 10 then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest","BartiloQuest",1)
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
             if _G.AutoSea2 then
                 if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("DressrosaQuestProgress").UsedKey == false then
                     if not game.Players.LocalPlayer.Backpack:FindFirstChild("Key") or game.Players.LocalPlayer.Character:FindFirstChild("Key") then
@@ -1005,7 +1051,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo then
                 if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
                     Noclip.Name = "BodyClip"
