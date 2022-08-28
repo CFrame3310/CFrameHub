@@ -62,9 +62,9 @@ AutoFarm:AddToggle("Auto Bartilo",_G.AutoBartilo,function(t)
     _G.AutoBartilo = t
 end)
 
-AutoFarm:AddToggle("Auto Race V2",_G.AutoBartilo,function(t)
-        _G.AutoRaceV2 = t
-    end)
+AutoFarm:AddToggle("Auto Race V2",_G.AutoRaceV2,function(t)
+	_G.AutoRaceV2 = t
+end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,_G.SelectWeapon,false,function(t)
     _G.SelectWeapon = t
