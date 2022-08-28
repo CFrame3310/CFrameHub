@@ -2,7 +2,7 @@ repeat
     wait()
 until game:IsLoaded()
 print("Game is loaded")
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 local Main = Win:CreateTab("Main")
@@ -62,9 +62,9 @@ AutoFarm:AddToggle("Auto Bartilo",_G.AutoBartilo,function(t)
     _G.AutoBartilo = t
 end)
 
-AutoFarm:AddToggle("Auto Race V2",_G.AutoRaceV2,function(t)
-	_G.AutoRaceV2 = t
-end)
+AutoFarm:AddToggle("Auto Race V2",_G.AutoBartilo,function(t)
+        _G.AutoRaceV2 = t
+    end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,_G.SelectWeapon,false,function(t)
     _G.SelectWeapon = t
@@ -738,7 +738,7 @@ spawn(function()
                                     Bring()
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                     Attack()
-                                until not _G.AutoFarm
+                                until not _G.AutoFarm or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
                     end
@@ -747,7 +747,7 @@ spawn(function()
                             if y:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
                                     Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                until not _G.AutoFarm
+                                until not _G.AutoFarm or not y.Parent or y.Humanoid.Health <= 0
                             end
                         end
                     end
