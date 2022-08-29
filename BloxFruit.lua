@@ -2,7 +2,7 @@ repeat
     wait()
 until game:IsLoaded()
 print("Game is loaded")
---loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 local Main = Win:CreateTab("Main")
@@ -26,6 +26,7 @@ Weapon = {}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
 Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhuman","Death Step","Sharkman Karate","Dragon Talon"}
 Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: Buddha","Sand","Bird: Phoenix"}
+BoneMob = {"Reborn Skeleton [Lv. 1975]","Living Zombie [Lv. 2000]","Demonic Soul [Lv. 2025]","Posessed Mummy [Lv. 2050]"}
 
 for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
     table.insert(Weapon,v.Name)
@@ -63,8 +64,14 @@ AutoFarm:AddToggle("Auto Bartilo",_G.AutoBartilo,function(t)
 end)
 
 AutoFarm:AddToggle("Auto Race V2",_G.AutoBartilo,function(t)
-        _G.AutoRaceV2 = t
-    end)
+    _G.AutoRaceV2 = t
+end)
+
+AutoFarm:AddSeperator("Sea 3")
+
+AutoFarm:AddToggle("Auto Farm Bone",_G.AutoBartilo,function(t)
+    _G.AutoFarmBone = t
+end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,_G.SelectWeapon,false,function(t)
     _G.SelectWeapon = t
@@ -664,6 +671,31 @@ function CheckQuest()
     end
 end
 
+function BoneBring()
+    if _G.BringMob then
+        for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+        for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
+        for i2,v2 in pairs(BoneMob) do
+            if v.Name == v2 and y.Name == v2 then
+                v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
+                v.HumanoidRootPart.CanCollide = false
+                y.HumanoidRootPart.CanCollide = false
+                v.HumanoidRootPart.Size = Vector3.new(60,60,60)
+                y.HumanoidRootPart.Size = Vector3.new(60,60,60)
+                v.Humanoid.WalkSpeed = 0
+                y.Humanoid.WalkSpeed = 0
+                v.Humanoid.JumpPower = 0
+                y.Humanoid.JumpPower = 0
+                if sethiddenproperty then
+                    sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
+                end
+            end
+        end
+        end
+        end
+    end
+end
+
 function Bring()
     if _G.BringMob then
         CheckQuest()
@@ -696,6 +728,12 @@ function Attack()
         end)
     end
 end
+
+spawn(function()
+    while task.wait() do
+        Attack()
+    end
+end)
 
 function EquipTool(Tool)
     if _G.AutoEquip then
@@ -733,11 +771,11 @@ spawn(function()
                     for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                         if v.Name == Mon then
                             if v:FindFirstChild("HumanoidRootPart") then
+                                Attack()
                                 repeat task.wait()
                                     EquipTool(_G.SelectWeapon)
                                     Bring()
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                    Attack()
                                 until not _G.AutoFarm or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
@@ -1072,6 +1110,40 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
+            if _G.AutoFarmBone then
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for x,y in pairs(BoneMob) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Attack()
+                                EquipTool(_G.SelectWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                BoneBring()
+                            until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for x,y in pairs(BoneMob) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
             if _G.AutoSetSpawn then
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
             end
@@ -1122,7 +1194,14 @@ spawn(function()
         end)
     end
 end)
-
+--[[
+for i,v in pairs(Fruit) do
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit",v)
+end
+for x,y in pairs(game.Players.LocalPlayer.PlayerGui.Notifications:GetChildren()) do
+    y:Destroy()
+end
+]]
 spawn(function()
     while task.wait() do
         pcall(function()
@@ -1303,7 +1382,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone then
                 if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
                     Noclip.Name = "BodyClip"
