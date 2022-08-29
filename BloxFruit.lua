@@ -1125,7 +1125,7 @@ spawn(function()
                     end
                 end
                 end
-                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
                 for x,y in pairs(BoneMob) do
                     if v.Name == y then
                         if v:FindFirstChild("HumanoidRootPart") then
