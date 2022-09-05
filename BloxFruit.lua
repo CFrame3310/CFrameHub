@@ -16,7 +16,7 @@ local function LoadSet()
         getgenv().Config = HttpService:JSONDecode(readfile('CFrame_Hub_Save_Setting.lua'))
     end
 end
-
+LoadSet()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
@@ -1606,6 +1606,13 @@ spawn(function()
         pcall(function()
             setfflag("HumanoidParallelRemoveNoPhysics", "False")
             setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
+        end)
+    end
+end)
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            SaveSet()
         end)
     end
 end)
