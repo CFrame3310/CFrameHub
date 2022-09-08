@@ -134,7 +134,7 @@ AutoFarm:AddToggle("Auto Farm Bone",getgenv().Config.AutoFarmBone,function(t)
     getgenv().Config.AutoFarmBone = t
 end)
 
-local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,getgenv().Config.SelectWeapon,false,function(t)
+local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,getgenv().Config.SelectWeapon,true,function(t)
     getgenv().Config.SelectWeapon = t
 end)
 
