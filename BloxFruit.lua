@@ -772,25 +772,25 @@ function CheckQuest()
             NameMon = "Head Baker"
             CFrameQuest = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.22142143e-08, 0.250778586, 4.74911062e-08, 1, 1.49904711e-08, -0.250778586, 2.64211941e-08, -0.96804446)
         elseif Level == 2300 or Level <= 2324 then
-            Mon = "Cocoa Warrior [Lv. 2325]"
+            Mon = "Cocoa Warrior [Lv. 2300]"
             LQuest = 1
             NQuest = "ChocQuest1"
             NameMon = "Cocoa Warrior"
             CFrameQuest = CFrame.new(231.88818359375, 24.769283294677734, -12202.1337890625)
         elseif Level == 2325 or Level <= 2349 then
-            Mon = "Chocolate Bar Battler [Lv. 2350]"
+            Mon = "Chocolate Bar Battler [Lv. 2325]"
             LQuest = 2
             NQuest = "ChocQuest1"
             NameMon = "Chocolate Bar Battler"
             CFrameQuest = CFrame.new(231.88818359375, 24.769283294677734, -12202.1337890625)
        elseif Level == 2350 or Level <= 2374 then
-            Mon = "Sweet Thief [Lv. 2375]"
+            Mon = "Sweet Thief [Lv. 2350]"
             LQuest = 1
             NQuest = "ChocQuest2"
             NameMon = "Sweet Thief"
             CFrameQuest = CFrame.new(151.1981201171875, 24.828855514526367, -12778.08984375)
        elseif Level >= 2375 then
-            Mon = "Candy Rebel [Lv. 2400]"
+            Mon = "Candy Rebel [Lv. 2375]"
             LQuest = 2
             NQuest = "ChocQuest2"
             NameMon = "Candy Rebel"
