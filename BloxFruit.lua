@@ -46,7 +46,7 @@ local function LoadSet()
     end
 end
 LoadSet()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 local Main = Win:CreateTab("Main")
@@ -134,8 +134,9 @@ AutoFarm:AddToggle("Auto Farm Bone",getgenv().Config.AutoFarmBone,function(t)
     getgenv().Config.AutoFarmBone = t
 end)
 
-local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,getgenv().Config.SelectWeapon,true,function(t)
-    getgenv().Config.SelectWeapon = t
+local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,"",false,function(t)
+    SWeapon = t
+    print(SWeapon)
 end)
 
 SelectSection:AddButton("Refresh Weapon",function()
@@ -154,10 +155,6 @@ SelectSection:AddButton("Refresh Weapon",function()
     end
 end)
 
-Settings:AddToggle("Auto Equip",true,function(t)
-    getgenv().Config.AutoEquip = t
-end)
-
 Settings:AddToggle("Auto Buso",true,function(t)
     getgenv().Config.AutoBuso = t
 end)
@@ -167,7 +164,9 @@ end)
 Settings:AddToggle("Auto Set Spawn",true,function(t)
     getgenv().Config.AutoSetSpawn = t
 end)
-
+Settings:AddToggle("Auto Equip",true,function(t)
+    AutoEquip = t
+end)
 Settings:AddToggle("Fast Attack",true,function(t)
     getgenv().Config.FastAttack = t
 end)
@@ -286,17 +285,17 @@ spawn(function()
         pcall(function()
             if getgenv().Config.AutoSuperhuman then
                 if game.Players.LocalPlayer.Backpack:FindFirstChild("Combat") then
-                    getgenv().Config.SelectWeapon = "Combat"
+                    SWeapon = "Combat"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Black Leg") then
-                    getgenv().Config.SelectWeapon = "Black Leg"
+                    SWeapon = "Black Leg"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Electro") then
-                    getgenv().Config.SelectWeapon = "Electro"
+                    SWeapon = "Electro"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Fishman Karate") then
-                    getgenv().Config.SelectWeapon = "Fishman Karate"
+                    SWeapon = "Fishman Karate"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Claw") then
-                    getgenv().Config.SelectWeapon = "Dragon Claw"
+                    SWeapon = "Dragon Claw"
                 elseif game.Players.LocalPlayer.Backpack:FindFirstChild("Superhuman") then
-                    getgenv().Config.SelectWeapon = "Superhuman"
+                    SWeapon = "Superhuman"
                 end
                 for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
                 for x,y in pairs(Melee) do
@@ -331,13 +330,6 @@ spawn(function()
     end
 end)
 
-spawn(function()
-    while task.wait() do
-        pcall(function()
-            SaveSet()
-        end)
-    end
-end)
 
 function CheckQuest()
     local Id = game.PlaceId
@@ -773,15 +765,40 @@ function CheckQuest()
             NQuest = "CakeQuest2"
             NameMon = "Baking Staff"
             CFrameQuest = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.22142143e-08, 0.250778586, 4.74911062e-08, 1, 1.49904711e-08, -0.250778586, 2.64211941e-08, -0.96804446)
-        elseif Level >= 2275  then
+        elseif Level == 2275 or Level <= 2299 then
             Mon = "Head Baker [Lv. 2275]"
             LQuest = 2
             NQuest = "CakeQuest2"
             NameMon = "Head Baker"
             CFrameQuest = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.22142143e-08, 0.250778586, 4.74911062e-08, 1, 1.49904711e-08, -0.250778586, 2.64211941e-08, -0.96804446)
+        elseif Level == 2300 or Level <= 2324 then
+            Mon = "Cocoa Warrior [Lv. 2325]"
+            LQuest = 1
+            NQuest = "ChocQuest1"
+            NameMon = "Cocoa Warrior"
+            CFrameQuest = CFrame.new(231.88818359375, 24.769283294677734, -12202.1337890625)
+        elseif Level == 2325 or Level <= 2349 then
+            Mon = "Cocolate Bar Battler [Lv. 2350]"
+            LQuest = 2
+            NQuest = "ChocQuest1"
+            NameMon = "Cocolate Bar Battler"
+            CFrameQuest = CFrame.new(231.88818359375, 24.769283294677734, -12202.1337890625)
+       elseif Level == 2350 or Level <= 2374 then
+            Mon = "Sweet Thief [Lv. 2375]"
+            LQuest = 1
+            NQuest = "ChocQuest2"
+            NameMon = "Sweet Thief"
+            CFrameQuest = CFrame.new(151.1981201171875, 24.828855514526367, -12778.08984375)
+       elseif Level >= 2375 then
+            Mon = "Candy Rebel [Lv. 2400]"
+            LQuest = 2
+            NQuest = "ChocQuest2"
+            NameMon = "Candy Rebel"
+            CFrameQuest = CFrame.new(151.1981201171875, 24.828855514526367, -12778.08984375)
         end
     end
 end
+
 
 spawn(function()
     while task.wait() do
@@ -857,12 +874,19 @@ end)
 
 
 function EquipTool(Tool)
-    if getgenv().Config.AutoEquip then
+    if AutoEquip then
         pcall(function()
             game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack:FindFirstChild(Tool))
         end)
     end
 end
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            EquipTool(SWeapon)
+        end)
+    end
+end)
 
 function Tween(P1)
     local Dis = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
@@ -919,7 +943,6 @@ spawn(function()
                                 repeat task.wait()
                                     if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 400 then
                                         TP(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                        EquipTool(getgenv().Config.SelectWeapon)
                                     else
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                     end
@@ -966,7 +989,7 @@ spawn(function()
                                     if v:FindFirstChild("HumanoidRootPart") then
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                         Attack()
-                                        EquipTool(getgenv().Config.SelectWeapon)
+                                        EquipTool(SelectWeapon)
                                     end
                                 until not getgenv().Config.AutoBartilo
                             end
@@ -994,7 +1017,7 @@ spawn(function()
                                 repeat task.wait()
                                     if v:FindFirstChild("HumanoidRootPart") then
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                        EquipTool(getgenv().Config.SelectWeapon)
+                                        EquipTool(SelectWeapon)
                                     end
                                 until not getgenv().Config.AutoBartilo
                             end
@@ -1054,7 +1077,7 @@ spawn(function()
                             repeat task.wait()
                                 if v:FindFirstChild("HumanoidRootPart") then
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                    EquipTool(getgenv().Config.SelectWeapon)
+                                    EquipTool(SelectWeapon)
                                 end
                             until Back:FindFirstChild("Flower 3")
                         end
@@ -1104,7 +1127,7 @@ spawn(function()
                                 if v.Name == "Ice Admiral [Lv. 700] [Boss]" then
                                     if v:FindFirstChild("HumanoidRootPart") then
                                         repeat task.wait()
-                                            EquipTool(getgenv().Config.SelectWeapon)
+                                            EquipTool(SelectWeapon)
                                             Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                         until not getgenv().Config.AutoSea2
                                     end
@@ -1180,7 +1203,7 @@ spawn(function()
                             if v.Name == "Mob Leader [Lv. 120] [Boss]" then
                                 if v:FindFirstChild("HumanoidRootPart") then
                                     repeat task.wait()
-                                        EquipTool(getgenv().Config.SelectWeapon)
+                                        EquipTool(SelectWeapon)
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                         v.HumanoidRootPart.Transparency = 0.5
                                         v.Humanoid.WalkSpeed = 0
@@ -1222,7 +1245,7 @@ spawn(function()
                             if v.Name == "Saber Expert [Lv. 200] [Boss]" then
                                 if v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Humanoid") then
                                     repeat task.wait()
-                                        EquipTool(getgenv().Config.SelectWeapon)
+                                        EquipTool(SelectWeapon)
                                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                         v.HumanoidRootPart.Transparency = 0.5
                                         v.Humanoid.WalkSpeed = 0
@@ -1260,7 +1283,7 @@ spawn(function()
                         if v:FindFirstChild("HumanoidRootPart") then
                             repeat task.wait()
                                 if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 400 then
-                                    EquipTool(getgenv().Config.SelectWeapon)
+                                    EquipTool(SelectWeapon)
                                     TP(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                 else
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
@@ -1432,6 +1455,8 @@ spawn(function()
                     if not game.Workspace._WorldOrigin.Locations:FindFirstChild("Island 1") then
                         if game.PlaceId == 4442272183 then
                         	fireclickdetector(game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                        elseif game.PlaceId == 7449423635 then
+                            fireclickdetector(game:GetService("Workspace").Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
                         end
                     end
                 end
@@ -1548,6 +1573,7 @@ spawn(function()
                         BillboardGui.StudsOffset = Vector3.new(0, 2.5, 0)
 
                         TextLabel.Parent = BillboardGui
+                        TextLAbel.Text = " "
                         TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                         TextLabel.BackgroundTransparency = 1.000
                         TextLabel.Size = UDim2.new(0, 200, 0, 50)
