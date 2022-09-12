@@ -2,21 +2,22 @@ repeat
     wait()
 until game:IsLoaded()
 print("Game is loaded")
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 local Main = Win:CreateTab("Main")
 local Player = Win:CreateTab("Player")
 local Dungeon = Win:CreateTab("Dungeon")
 local ShopMain = Win:CreateTab("Shop")
-local Mise = Win:CreateTab("Mise.")
+local Misc = Win:CreateTab("Misc.")
 
 local AutoFarm = Main:CreateSector("Auto Farm","Left")
 local SelectSection = Main:CreateSector("Select Weapon","Right")
 local Settings = Main:CreateSector("Property","Right")
 
 local Autostats = Player:CreateSector("Auto Stats","Left")
-local Lock = Player:CreateSector("Lock","Right")
+local Fake = Player:CreateSector("Fake Data","Left")
+local Lock = Player:CreateSector("Lock Data","Right")
 local StockFruit = Player:CreateSector("Store Fruit","Right")
 
 local Raid = Dungeon:CreateSector("Auto Dungeon","Left")
@@ -26,8 +27,8 @@ local Shop = ShopMain:CreateSector("Shop","Left")
 local BuyMelee = ShopMain:CreateSector("Melee","Left")
 local Haki = ShopMain:CreateSector("Haki","Right")
 
-local Openui = Mise:CreateSector("Game Ui","Left")
-local Abilities = Mise:CreateSector("Abilities","Right")
+local Openui = Misc:CreateSector("Game Ui","Left")
+local Abilities = Misc:CreateSector("Abilities","Right")
 
 
 local UIS = game:GetService("UserInputService")
@@ -35,7 +36,7 @@ local Mouse = game.Players.LocalPlayer:GetMouse()
 
 Weapon = {}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
-Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhuman","Death Step","Electric Claw","Sharkman Karate","Dragon Talon"}
+Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhuman","Death Step","Electric Claw","Sharkman Karate","Dragon Talon","Godhuman"}
 Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: Buddha","Sand","Bird: Phoenix"}
 BoneMob = {"Reborn Skeleton [Lv. 1975]","Living Zombie [Lv. 2000]","Demonic Soul [Lv. 2025]","Posessed Mummy [Lv. 2050]"}
 
@@ -115,12 +116,10 @@ end)
 Settings:AddToggle("Auto Ken",true,function(t)
     _G.AutoKen = t 
 end)
-Settings:AddToggle("Auto Set Spawn",true,function(t)
+Settings:AddToggle("Auto Set Home",false,function(t)
     _G.AutoSetSpawn = t
 end)
-Settings:AddToggle("Auto Equip",true,function(t)
-    _G.AutoEquip = t
-end)
+
 Settings:AddToggle("Fast Attack",true,function(t)
     _G.FastAttack = t
 end)
@@ -144,6 +143,27 @@ Autostats:AddToggle("Auto Gun",_G.Gun,function(t)
 end)
 Autostats:AddToggle("Auto Blox Fruit",_G.BF,function(t)
     _G.BF = t
+end)
+
+Fake:AddToggle("Fake Beli",_G.FakeBeli,function(t)
+    _G.FakeBeli = t
+end)
+Fake:AddTextbox("Fake Beli Value",_G.BeliVal,function(t)
+    _G.BeliVal = tonumber(t)
+end)
+
+Fake:AddToggle("Fake Fragment",_G.FakeFragment,function(t)
+    _G.FakeFragment = t
+end)
+Fake:AddTextbox("Fake Fragment Value",_G.FragmentVal,function(t)
+    _G.FragmentVal = tonumber(t)
+end)
+
+Fake:AddToggle("Fake Level",_G.FakeLevel,function(t)
+    _G.FakeLevel = t
+end)
+Fake:AddTextbox("Fake Level Value",_G.LevelVal,function(t)
+    _G.LevelVal = tonumber(t)
 end)
 
 Lock:AddToggle("Lock Beli",_G.LockBeli,function(t)
@@ -753,28 +773,33 @@ function CheckQuest()
     end
 end
 
-
 spawn(function()
     while task.wait() do
-        if _G.BringMob and _G.AutoBartilo or _G.AutoFarmBone then
+        if _G.AutoFarmBone then
             pcall(function()
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v.Name == y.Name then
-                        v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
-                        v.HumanoidRootPart.CanCollide = false
-                        y.HumanoidRootPart.CanCollide = false
-                        v.Humanoid.WalkSpeed_= 0
-                        y.Humanoid.WalkSpeed = 0
-                        v.Humanoid:ChangeState(2)
-                        y.Humanoid:ChangeState(2)
-                        v.Humanoid.JumpPower = 0
-                        y.Humanoid.JumpPower = 0
-                        if sethiddenproperty then
-                            sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
+                    for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == y.Name then
+                            v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
                         end
                     end
                 end
+                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == y.Name then
+                            v.HumanoidRootPart.CanCollide = false
+                            y.HumanoidRootPart.CanCollide = false
+                            v.Humanoid.WalkSpeed = 0
+                            y.Humanoid.WalkSpeed = 0
+                            v.Humanoid:ChangeState(2)
+                            y.Humanoid:ChangeState(2)
+                            v.Humanoid.JumpPower = 0
+                            y.Humanoid.JumpPower = 0
+                            if sethiddenproperty then
+                                sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
+                            end
+                        end
+                    end
                 end
             end)
         end
@@ -835,7 +860,7 @@ end
 
 spawn(function()
     while task.wait() do
-        if _G.AutoEquip then
+        if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 then
             EquipTool(_G.SWeapon)
         end
     end
@@ -1227,12 +1252,8 @@ spawn(function()
                     if v.Name == y then
                         if v:FindFirstChild("HumanoidRootPart") then
                             repeat task.wait()
-                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 400 then
-                                    EquipTool(_G.SWeapon)
-                                    TP(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                else
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                end
+                                EquipTool(_G.SWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                             until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
@@ -1243,11 +1264,7 @@ spawn(function()
                     if v.Name == y then
                         if v:FindFirstChild("HumanoidRootPart") then
                             repeat task.wait()
-                                if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 400 then
-                                    TP(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                else
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                end
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                             until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
@@ -1302,7 +1319,7 @@ spawn(function()
             if _G.Sword then
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint","Sword",1)
             end
-            if getgenv().Config.Gun then
+            if _G.Gun then
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AddPoint","Gun",1)
             end
             if _G.BF then
@@ -1319,6 +1336,16 @@ spawn(function()
                 if game.Players.LocalPlayer.Data.Beli.value >= _G.BeliValue then
                     game.Players.LocalPlayer:Kick("Lock Beli Kick")
                 end
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        if _G.FakeLevel and _G.LevelVal then
+            pcall(function()
+                game.Players.LocalPlayer.Data.Level.value = _G.LevelVal
             end)
         end
     end
@@ -1345,6 +1372,7 @@ spawn(function()
             end)
         end
     end
+
 end)
 
 
@@ -1353,7 +1381,11 @@ spawn(function()
         if _G.StoreFruit then
             pcall(function()
                 for i,v in pairs(Fruit) do
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit",v)
+                for x,y in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if string.find(y.Name,"Fruit") then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit",v,game.Players.LocalPlayer.Backpack[y.Name])
+                    end
+                end
                 end
             end)
         end
