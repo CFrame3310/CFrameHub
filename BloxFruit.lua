@@ -2,7 +2,7 @@ repeat
     wait()
 until game:IsLoaded()
 print("Game is loaded")
---loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
 local Win = library:CreateWindow("CFrame Hub | Blox Fruit",Enum.KeyCode.RightControl)
 local Main = Win:CreateTab("Main")
@@ -39,6 +39,7 @@ Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke
 Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhuman","Death Step","Electric Claw","Sharkman Karate","Dragon Talon","Godhuman"}
 Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: Buddha","Sand","Bird: Phoenix"}
 BoneMob = {"Reborn Skeleton [Lv. 1975]","Living Zombie [Lv. 2000]","Demonic Soul [Lv. 2025]","Posessed Mummy [Lv. 2050]"}
+DoughMob = {"Cookie Crafter [Lv. 2200]","Cake Guard [Lv. 2225]","Baking Staff [Lv. 2250]","Head Baker [Lv. 2275]"}
 
 function MeleeBuy(N1,N2,N3,N4)
     BuyMelee:AddButton(N1,function()
@@ -87,13 +88,22 @@ end)
 
 AutoFarm:AddSeperator("Sea 3")
 
+AutoFarm:AddToggle("Auto Elite",_G.AutoElite,function(t)
+    _G.AutoElite = t
+end)
+
 AutoFarm:AddToggle("Auto Farm Bone",_G.AutoFarmBone,function(t)
     _G.AutoFarmBone = t
+end)
+
+AutoFarm:AddToggle("Auto Dough King V1",_G.AutoDoughKingV1,function(t)
+    _G.AutoDoughKingV1 = t
 end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,_G.SWeapon,false,function(t)
     _G.SWeapon = t
 end)
+
 SelectSection:AddButton("Refresh Weapon",function()
     for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Main.Inventory.Container.Stored.ScrollingFrame.Frame:GetChildren()) do
         SelectWeapon:Remove(v.Name)
@@ -207,7 +217,9 @@ end)
 RaidProperty:AddToggle("Kill Aura",_G.Killaura,function(t)
     _G.Killaura = t
 end)
-
+Shop:AddToggle("Auto Bone Random",_G.AutoBoneRandom,function(t)
+    _G.AutoBoneRandom = t
+end)
 Shop:AddToggle("Auto Random Fruit",_G.AutoRandom,function(t)
     _G.AutoRandom = t
 end)
@@ -775,7 +787,7 @@ end
 
 spawn(function()
     while task.wait() do
-        if _G.AutoFarmBone then
+        if _G.AutoFarmBone or _G.AutoDoughKingV1 then
             pcall(function()
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -836,7 +848,7 @@ end)
 
 spawn(function()
     while task.wait() do
-        if _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 then
+        if _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite then
             pcall(function()
                 local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
                 local CombatFramework = debug.getupvalues(Module)[2]
@@ -860,7 +872,7 @@ end
 
 spawn(function()
     while task.wait() do
-        if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 then
+        if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite then
             EquipTool(_G.SWeapon)
         end
     end
@@ -1246,6 +1258,33 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
+            if _G.AutoElite then
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == "Diablo [Lv. 1750]" or v.Name == "Urban [Lv. 1750]" or v.Name == "Deandre [Lv. 1750]" then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoElite or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                    if v.Name == "Diablo [Lv. 1750]" or v.Name == "Urban [Lv. 1750]" or v.Name == "Deandre [Lv. 1750]" then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoElite or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
             if _G.AutoFarmBone then
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                 for x,y in pairs(BoneMob) do
@@ -1266,6 +1305,38 @@ spawn(function()
                             repeat task.wait()
                                 Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                             until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoDoughKingV1 then
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for x,y in pairs(DoughMob) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                    EquipTool(_G.SWeapon)
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                for x,y in pairs(DoughMob) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
                 end
@@ -1331,9 +1402,19 @@ end)
 
 spawn(function()
     while task.wait() do
+        if _G.FakeLevel and _G.LevelVal then
+            pcall(function()
+                game.Players.LocalPlayer.Data.Level.Value = _G.LevelVal
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
         if _G.LockBeli and _G.BeliValue then
            pcall(function()
-                if game.Players.LocalPlayer.Data.Beli.value >= _G.BeliValue then
+                if game.Players.LocalPlayer.Data.Beli.Value >= _G.BeliValue then
                     game.Players.LocalPlayer:Kick("Lock Beli Kick")
                 end
             end)
@@ -1343,19 +1424,9 @@ end)
 
 spawn(function()
     while task.wait() do
-        if _G.FakeLevel and _G.LevelVal then
-            pcall(function()
-                game.Players.LocalPlayer.Data.Level.value = _G.LevelVal
-            end)
-        end
-    end
-end)
-
-spawn(function()
-    while task.wait() do
         if _G.LockFragment and _G.FragmentValue then
             pcall(function()
-                if game.Players.LocalPlayer.Data.Beli.value >= _G.FragmentValue then
+                if game.Players.LocalPlayer.Data.Beli.Value >= _G.FragmentValue then
                     game.Players.LocalPlayer:Kick("Lock Fragments Kick")
                 end
             end)
@@ -1366,7 +1437,7 @@ spawn(function()
     while task.wait() do
         if _G.LockLevel and _G.LevelValue then
             pcall(function()
-                if game.Players.LocalPlayer.Data.Level.value >= _G.LevelValue then
+                if game.Players.LocalPlayer.Data.Level.Value >= _G.LevelValue then
                     game.Players.LocalPlayer:Kick("Lock Level Kick")
                 end
             end)
@@ -1472,7 +1543,15 @@ spawn(function()
         end)
     end
 end)
-
+spawn(function()
+    while task.wait() do
+        if _G.AutoBoneRandom then
+            pcall(function()
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
+            end)
+        end
+    end
+end)
 spawn(function()
     while wait() do
         pcall(function()
@@ -1602,7 +1681,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.TweenMouse then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.TweenMouse or _G.AutoDoughKingV1 or _G.AutoElite then
                 if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
                     Noclip.Name = "BodyClip"
@@ -1620,7 +1699,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite then
                 game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
             else
                 game.Players.LocalPlayer.Character.Humanoid:ChangeState(18)
@@ -1632,7 +1711,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite then
                 for i,v in pairs(getconnections(game.Players.LocalPlayer.PlayerGui.Main.Dialogue.Option1.MouseButton1Click)) do
                     v:Fire()
                 end
@@ -1643,7 +1722,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.StoreFruit then
+            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.StoreFruit or _G.AutoDoughKingV1 or _G.AutoElite then
                 for i,v in pairs(game.Players.LocalPlayer.PlayerGui.Notifications:GetChildren()) do
                     v:Destroy()
                 end
