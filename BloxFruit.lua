@@ -29,6 +29,7 @@ local BuyMelee = ShopMain:CreateSector("Melee","Left")
 local Haki = ShopMain:CreateSector("Haki","Right")
 
 local Openui = Misc:CreateSector("Game Ui","Left")
+local SeaTP = Misc:CreateSector("Teleport","Left")
 local Abilities = Misc:CreateSector("Abilities","Right")
 
 local UIS = game:GetService("UserInputService")
@@ -40,6 +41,7 @@ Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhum
 Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: Buddha","Sand","Bird: Phoenix"}
 BoneMob = {"Reborn Skeleton [Lv. 1975]","Living Zombie [Lv. 2000]","Demonic Soul [Lv. 2025]","Posessed Mummy [Lv. 2050]"}
 DoughMob = {"Cookie Crafter [Lv. 2200]","Cake Guard [Lv. 2225]","Baking Staff [Lv. 2250]"}
+MaterialMethod = {"Radioactive Material","Mystic Droplet","Magma Ore","Angel Wings","Leather","Scrap Metal","Demonic Wisp","Vampire Fang","Conjured Cocoa","Dragon Scale","Gunpowder","Fish Tail","Mini Tusk"}
 
 function MeleeBuy(N1,N2,N3,N4)
     BuyMelee:AddButton(N1,function()
@@ -56,52 +58,81 @@ for x,y in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
     end
 end
 
-AutoFarm:AddSeperator("Main")
+AutoFarm:AddSeperator("Auto Farm")
 
 AutoFarm:AddToggle("Auto Farm",_G.AutoFarm,function(t)
     _G.AutoFarm = t
 end)
 
+AutoFarm:AddSeperator("Auto Farm Material")
+
+local LSelectMaterial = AutoFarm:AddDropdown("Select Material",MaterialMethod,_G.SelectMaterial,false,function(t)
+    _G.SelectMaterial = t
+end)
+
+AutoFarm:AddToggle("Auto Farm Material",_G.AutoFarmMaterial,function(t)
+    _G.AutoFarmMaterial = t
+end)
+
+
+AutoFarm:AddSeperator("Auto Melee")
+
 AutoFarm:AddToggle("Auto Superhuman",_G.AutoSuperhuman,function(t)
     _G.AutoSuperhuman = t
-end)
-
-AutoFarm:AddSeperator("Sea 1")
-
-AutoFarm:AddToggle("Auto Saber",_G.AutoSaber,function(t)
-    _G.AutoSaber = t
-end)
-
-AutoFarm:AddToggle("Auto Sea 2",_G.AutoSea2,function(t)
-    _G.AutoSea2 = t
-end)
-
-AutoFarm:AddSeperator("Sea 2")
-
-AutoFarm:AddToggle("Auto Bartilo",_G.AutoBartilo,function(t)
-    _G.AutoBartilo = t
-end)
-
-AutoFarm:AddToggle("Auto Race V2",_G.AutoRaceV2,function(t)
-    _G.AutoRaceV2 = t
 end)
 
 AutoFarm:AddToggle("Auto Sharkman",_G.AutoSharkman,function(t)
     _G.AutoSharkman = t
 end)
 
-AutoFarm:AddSeperator("Sea 3")
+AutoFarm:AddToggle("Auto Sharkman Hop",_G.AutoSharkmanHop,function(t)
+    _G.AutoSharkmanHop = t
+end)
+
+AutoFarm:AddSeperator("Auto Saber")
+
+AutoFarm:AddToggle("Auto Saber",_G.AutoSaber,function(t)
+    _G.AutoSaber = t
+end)
+
+AutoFarm:AddSeperator("Auto Sea")
+
+AutoFarm:AddToggle("Auto Sea 2",_G.AutoSea2,function(t)
+    _G.AutoSea2 = t
+end)
+
+AutoFarm:AddSeperator("Auto Bartilo")
+
+AutoFarm:AddToggle("Auto Bartilo",_G.AutoBartilo,function(t)
+    _G.AutoBartilo = t
+end)
+
+AutoFarm:AddSeperator("Auto Race")
+
+AutoFarm:AddToggle("Auto Race V2",_G.AutoRaceV2,function(t)
+    _G.AutoRaceV2 = t
+end)
+
+AutoFarm:AddSeperator("Auto Elite")
 
 AutoFarm:AddToggle("Auto Elite",_G.AutoElite,function(t)
     _G.AutoElite = t
 end)
 
+AutoFarm:AddSeperator("Auto Farm Bone")
+
 AutoFarm:AddToggle("Auto Farm Bone",_G.AutoFarmBone,function(t)
     _G.AutoFarmBone = t
 end)
 
+AutoFarm:AddSeperator("Auto Dough King")
+
 AutoFarm:AddToggle("Auto Dough King V1",_G.AutoDoughKingV1,function(t)
     _G.AutoDoughKingV1 = t
+end)
+
+AutoFarm:AddToggle("Auto Dough King V2",_G.AutoDoughKingV2,function(t)
+    _G.AutoDoughKingV2 = t
 end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,_G.SWeapon,false,function(t)
@@ -261,6 +292,16 @@ Openui:AddButton("Fruit Inventory",function()
     game.Players.LocalPlayer.PlayerGui.Main.FruitInventory.Visible = true
 end)
 
+SeaTP:AddButton("Teleport Sea 1",function()
+    game:GetService("TeleportService"):Teleport(2753915549, game:GetService("Players").LocalPlayer)
+end)
+SeaTP:AddButton("Teleport Sea 2",function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")
+end)
+SeaTP:AddButton("Teleport Sea 3",function()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou")
+end)
+
 Abilities:AddToggle("Tween to mouse",false,function(t)
     _G.TweenMouse = t
 end)
@@ -321,6 +362,74 @@ spawn(function()
     end
 end)
 
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+local File = pcall(function()
+    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+end)
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+end
+function TPReturner()
+    local Site;
+    if foundAnything == "" then
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+    else
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0;
+    for i,v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _,Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                wait()
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                    wait()
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+                end)
+                wait(4)
+            end
+        end
+    end
+end
+
+function Teleport()
+    while wait() do
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
+            end
+        end)
+    end
+end
 
 function CheckQuest()
     local Id = game.PlaceId
@@ -790,9 +899,91 @@ function CheckQuest()
     end
 end
 
+function MaterialMon()
+    if _G.SelectMaterial == "Radioactive Material" then
+        Mon = "Factory Staff [Lv. 800]"
+        Pos = CFrame.new(-507.7895202636719, 72.99479675292969, -126.45632934570312)
+        SP = "Bar"
+    elseif _G.SelectMaterial == "Mystic Droplet" then
+        Mon = "Water Fighter [Lv. 1450]"
+        Pos = CFrame.new(-3214.218017578125, 298.69952392578125, -10543.685546875)
+        SP = "ForgottenIsland"
+    elseif _G.SelectMaterial == "Magma Ore" then
+        if game.PlaceId == 2753915549 then
+            Mon = "Military Spy [Lv. 325]"
+            Pos = CFrame.new(-5850.2802734375, 77.28675079345703, 8848.6748046875)
+            SP = "Magma"
+        elseif game.PlaceId == 4442272183 then
+            Mon = "Lava Pirate [Lv. 1200]"
+            Pos = CFrame.new(-5234.60595703125, 51.953372955322266, -4732.27880859375)
+            SP = "CircleIslandFire"
+        end
+    elseif _G.SelectMaterial == "Angel Wings" then
+        Mon = "Royal Soldier [Lv. 550]"
+        Pos = CFrame.new(-7827.15625, 5606.912109375, -1705.5833740234375)
+        SP = "Sky2"
+    elseif _G.SelectMaterial == "Leather" then
+        if game.PlaceId == 2753915549 then
+            Mon = "Pirate [Lv. 36]"
+            Pos = CFrame.new(-1211.8792724609375, 4.787090301513672, 3916.83056640625)
+            SP = "Pirate"
+        elseif game.PlaceId == 4442272183 then
+            Mon = "Marine Captian [Lv. 900]"
+            Pos = CFrame.new(-2010.5059814453125, 73.00115966796875, -3326.620849609375)
+            SP = "Greenb"
+        elseif game.PlaceId == 7449423635 then
+            Mon = "Jungle Pirate [Lv. 1900]"
+            Pos = CFrame.new(-11975.78515625, 331.7734069824219, -10620.0302734375)
+            SP = "PineappleTown"
+        end
+    elseif _G.SelectMaterial == "Scrap Metal" then
+        if game.PlaceId == 2753915549 then
+            Mon = "Brute [Lv. 45]"
+            Pos = CFrame.new(-1132.4202880859375, 14.844913482666016, 4293.30517578125)
+            SP = "Pirate"
+        elseif game.PlaceId == 4442272183 then
+            Mon = "Mercenary [Lv. 750]"
+            Pos = CFrame.new(-972.307373046875, 73.04473876953125, 1419.2901611328125)
+            SP = "DressTown"
+        elseif game.PlaceId == 7449423635 then
+            Mon = "Pirate Millionaire [Lv. 1500]"
+            Pos = CFrame.new(-289.6311950683594, 43.8282470703125, 5583.66357421875)
+            SP = "Default"
+        end
+    elseif _G.SelectMaterial == "Demonic Wisp" then
+        Mon = "Demonic Soul [Lv. 2025]"
+        Pos = CFrame.new(-9503.388671875, 172.139892578125, 6143.0634765625)
+        SP = "HauntedCastle"
+    elseif _G.SelectMaterial == "Vampire Fang" then
+        Mon = "Vampire [Lv. 975]"
+        Pos = CFrame.new(-5999.20458984375, 6.437741279602051, -1290.059326171875)
+        SP = "Graveyard"
+    elseif _G.SelectMaterial == "Conjured Cocoa" then
+        Mon = "Chocolate Bar Battler [Lv. 2325]"
+        Pos = CFrame.new(744.7930908203125, 24.76934242248535, -12637.7255859375)
+        SP = "Chocolate"
+    elseif _G.SelectMaterial == "Dragon Scale" then
+        Mon = "Dragon Crew Warrior [Lv. 1575]"
+        Pos = CFrame.new(5824.06982421875, 51.38640213012695, -1106.694580078125)
+        SP = "Hydra1"
+    elseif _G.SelectMaterial == "Gunpowder" then
+        Mon = "Pistol Billionaire [Lv. 1525]"
+        Pos = CFrame.new(-379.6134338378906, 73.84449768066406, 5928.5263671875)
+        SP = "Default"
+    elseif _G.SelectMaterial == "Fish Tail" then
+        Mon = "Fishman Captian [Lv. 1800]"
+        Pos = CFrame.new(-10961.0126953125, 331.7977600097656, -8914.29296875)
+        SP = "PineappleTown"
+    elseif _G.SelectMaterial == "Mini Tusk" then
+        Mon = "Mythological Pirate [Lv. 1850]"
+        Pos = CFrame.new(-13516.0458984375, 469.8182373046875, -6899.16064453125)
+        SP = "BigMansion"
+    end
+end
+
 spawn(function()
     while task.wait() do
-        if _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoBartilo then
+        if _G.AutoFarmMaterial or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoBartilo or _G.AutoDoughKingV2 then
             pcall(function()
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -853,7 +1044,7 @@ end)
 
 spawn(function()
     while task.wait() do
-        if _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+        if _G.AutoFarmMaterial or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman or _G.AutoDoughKingV2 then
             pcall(function()
                 local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
                 local CombatFramework = debug.getupvalues(Module)[2]
@@ -874,15 +1065,15 @@ function EquipTool(Tool)
         game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack:FindFirstChild(Tool))
     end)
 end
-
+--[[
 spawn(function()
     while task.wait() do
-        if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.Sharkman then
+        if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman or _G.AutoDoughKingV2 then
             EquipTool(_G.SWeapon)
         end
     end
 end)
-
+]]
 function Tween(P1)
     local Dis = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
     local Speed
@@ -940,6 +1131,13 @@ spawn(function()
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                 until not _G.AutoFarm or not v.Parent or v.Humanoid.Health <= 0
                             end
+                        end
+                    end
+                    for i,v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
+                        if string.find(v.Name,NameMon) then
+                            repeat task.wait()
+                                Tween(v.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoFarm or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
                     for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
@@ -1097,62 +1295,38 @@ spawn(function()
     while task.wait() do
         pcall(function()
             if _G.AutoSharkman then
-                for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                    if v.Name == "Combat" or v.Name == "Black Leg" or v.Name == "Electro" or v.Name == "Dragon Claw" or v.Name == "Superhuman" or v.Name == "Death Step" or v.Name == "Electric Claw" or v.Name == "Dragon Talon" then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyFishmanKarate")
-                    end
-                end
-                if game.Players.LocalPlayer.Backpack:FindFirstChild("Fishman Karate").Level.Value <= 349 or game.Players.LocalPlayer.Character:FindFirstChild("Fishman Karate").Level.Value >= 349 then
-                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if v.Name == "Water Fighter [Lv. 1450]" then
-                            if v:FindFirstChild("HumanoidRootPart") then
-                                repeat task.wait()
-                                    EquipTool("Fishman Karate")
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
-                            end
-                        end
-                    end
-                    for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
-                        if v.Name == "Water Fighter [Lv. 1450]" then
-                            if v:FindFirstChild("HumanoidRootPart") then
-                                repeat task.wait()
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
-                            end
-                        end
-                    end
-                end
-                if game.Players.LocalPlayer.Backpack:FindFirstChild("Fishman Karate").Level.Value >= 350 or game.Players.LocalPlayer.Character:FindFirstChild("Fishman Karate").Level.Value >= 350 then
-                    if not game.Players.LocalPlayer.Backpack:FindFirstChild("Water key") then
-                        if not game.Players.LocalPlayer.Backpack:FindFirstChild("Sharkman Karate") then
-                            for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                                if v.Name == "Tide Keeper [Lv. 1475] [Boss]" then
-                                    if v:FindFirstChild("HumanoidRootPart") then
-                                        repeat task.wait()
-                                            Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                        until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
-                                    end
+                if not game.Players.LocalPlayer.Backpack:FindFirstChild("Water key") then
+                    if not game.Players.LocalPlayer.Backpack:FindFirstChild("Sharkman Karate") then
+                        for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                            if v.Name == "Tide Keeper [Lv. 1475] [Boss]" then
+                                if v:FindFirstChild("HumanoidRootPart") then
+                                    repeat task.wait()
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        EquipTool(_G.SWeapon)
+                                    until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
                                 end
                             end
-                            for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
-                                if v.Name == "Tide Keeper [Lv. 1475] [Boss]" then
-                                    if v:FindFirstChild("HumanoidRootPart") then
-                                      repeat task.wait()
-                                            Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                        until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                        for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                            if v:FindFirstChild("Tide Keeper [Lv. 1475] [Boss]") then
+                                if v:FindFirstChild("HumanoidRootPart") then
+                                    repeat task.wait()
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
+                                end
+                            else
+                                if _G.AutoSharkmanHop then
+                                    if not v:FindFirstChild("Tide Keeper [Lv. 1475] [Boss]") then
+                                        wait(5)
+                                        Teleport()
+                                        --game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
                                     end
                                 end
                             end
                         end
-                    else
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySharkmanKarate",true)
                     end
-                end
-                if game.Players.LocalPlayer.Backpack:FindFirstChild("Sharkman Karate").Level.Value <= 400 then
-                    if _G.AutoSharkman then
-                        _G.AutoFarm = true
-                    end
+                else
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySharkmanKarate",true)
                 end
             end
         end)
@@ -1197,7 +1371,7 @@ spawn(function()
                             end
                         end
                         if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("DressrosaQuestProgress").KilledIceBoss == true then
-                            if game.PlaceId ~= 4442272183 then
+                            if game.PlaceId == 2753915549 then
                                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")
                             end
                         end
@@ -1356,6 +1530,39 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
+            if _G.AutoFarmMaterial then
+                MaterialMon()
+                if game:GetService("Players").LocalPlayer.Data.LastSpawnPoint.Value ~= SP then
+                    Tween(Pos)
+                else
+                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == Mon then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    EquipTool(_G.SWeapon)
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                    for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if v.Name == Mon then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
             if _G.AutoFarmBone then
                 if game:GetService("Players").LocalPlayer.Data.LastSpawnPoint.Value ~= "HauntedCastle" then
                     Tween(CFrame.new(-9508.5673828125, 142.1398468017578, 5737.3603515625))
@@ -1394,6 +1601,9 @@ spawn(function()
         pcall(function()
             if _G.AutoDoughKingV1 then
                 if not game.ReplicatedStorage:FindFirstChild("Cake Prince [Lv. 2300] [Raid Boss]") then
+                    if game:GetService("Players").LocalPlayer.Data.LastSpawnPoint.Value ~= "Loaf" then
+                        Tween(CFrame.new(-2021.32007, 37.7982254, -12028.7295))
+                    end
                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner")
                     for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     for x,y in pairs(DoughMob) do
@@ -1436,6 +1646,34 @@ spawn(function()
                                     Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
                                 until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
                             end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoDoughKingV2 then
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == "Dough King [Lv. 2300] [Raid Boss]" then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                EquipTool(_G.SWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                    if v.Name == "Dough King [Lv. 2300] [Raid Boss]" then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
                 end
@@ -1711,33 +1949,34 @@ spawn(function()
     while task.wait() do
         if _G.FruitEsp then
             for i,v in pairs(game.Workspace:GetChildren()) do
-                if v:IsA("Tool") or v:IsA("Model") then
-                    if not v:FindFirstChild("FruitEsp") then
-                        local BillboardGui = Instance.new("BillboardGui")
-                        local TextLabel = Instance.new("TextLabel")
-                        BillboardGui.Parent = v.Handle
-                        BillboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-                        BillboardGui.Active = true
-                        BillboardGui.Name = "FruitEsp"
-                        BillboardGui.AlwaysOnTop = true
-                        BillboardGui.LightInfluence = 1.000
-                        BillboardGui.Size = UDim2.new(0, 200, 0, 50)
-                        BillboardGui.StudsOffset = Vector3.new(0, 2.5, 0)
+                if v:IsA("Tool") then
+                    if v:FindFirstChild("Handle") then
+                        if not v.Handle:FindFirstChild("FruitEsp") then
+                            local BillboardGui = Instance.new("BillboardGui")
+                            local TextLabel = Instance.new("TextLabel")
+                            BillboardGui.Parent = v.Handle
+                            BillboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                            BillboardGui.Active = true
+                            BillboardGui.Name = "FruitEsp"
+                            BillboardGui.AlwaysOnTop = true
+                            BillboardGui.LightInfluence = 1.000
+                            BillboardGui.Size = UDim2.new(0, 200, 0, 50)
+                            BillboardGui.StudsOffset = Vector3.new(0, 2.5, 0)
 
-                        TextLabel.Parent = BillboardGui
-                        TextLAbel.Text = " "
-                        TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                        TextLabel.BackgroundTransparency = 1.000
-                        TextLabel.Size = UDim2.new(0, 200, 0, 50)
-                        TextLabel.Font = Enum.Font.GothamBold
-                        TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-                        TextLabel.TextScaled = true
-                        TextLabel.TextSize = 14.000
-                        TextLabel.TextStrokeTransparency = 0.000
-                        TextLabel.TextWrapped = true
+                            TextLabel.Parent = BillboardGui
+                            TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                            TextLabel.BackgroundTransparency = 1.000
+                            TextLabel.Size = UDim2.new(0, 200, 0, 50)
+                            TextLabel.Font = Enum.Font.GothamBold
+                            TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                            TextLabel.TextScaled = true
+                            TextLabel.TextSize = 14.000
+                            TextLabel.TextStrokeTransparency = 0.000
+                            TextLabel.TextWrapped = true
+                        end
+                        local Dis = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Handle.Position).Magnitude)
+                        v.Handle:FindFirstChildOfClass("BillboardGui").TextLabel.Text = v.Name.."\n"..Dis.." m."
                     end
-                    local Dis = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Handle.Position).Magnitude)
-                    v.Handle:FindFirstChildOfClass("BillboardGui").TextLabel.Text = v.Name.."\n\n"..Dis.." m."
                 end
             end
         end
@@ -1768,7 +2007,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 for i,v in pairs(game.Workspace["_WorldOrigin"]:GetChildren()) do
                     if v:IsA("Part") or v:IsA("MeshPart") then
                         v:Destroy() 
@@ -1781,7 +2020,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.TweenMouse or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.TweenMouse or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
                     Noclip.Name = "BodyClip"
@@ -1799,7 +2038,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
             else
                 game.Players.LocalPlayer.Character.Humanoid:ChangeState(18)
@@ -1811,7 +2050,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 for i,v in pairs(getconnections(game.Players.LocalPlayer.PlayerGui.Main.Dialogue.Option1.MouseButton1Click)) do
                     v:Fire()
                 end
@@ -1822,7 +2061,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.StoreFruit or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.StoreFruit or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 for i,v in pairs(game.Players.LocalPlayer.PlayerGui.Notifications:GetChildren()) do
                     v:Destroy()
                 end
