@@ -2,6 +2,74 @@ repeat
     wait()
 until game:IsLoaded()
 print("Game is loaded")
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+local File = pcall(function()
+    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+end)
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+end
+function TPReturner()
+    local Site;
+    if foundAnything == "" then
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+    else
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0;
+    for i,v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _,Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                wait()
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                    wait()
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+                end)
+                wait(4)
+            end
+        end
+    end
+end
+
+function Teleport()
+    while wait() do
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
+            end
+        end)
+    end
+end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/HelloWorld.lua"))()
 Date = os.date("%d".." ".."%B".." ".."%Y")
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/naypramx/Ui__Project/Script/XeNonUi",true))()
@@ -15,6 +83,7 @@ local Misc = Win:CreateTab("Misc.")
 local AutoFarm = Main:CreateSector("Auto Farm","Left")
 local SelectSection = Main:CreateSector("Select Weapon","Right")
 local Settings = Main:CreateSector("Property","Right")
+local CustomMethod = Main:CreateSector("Custom Distance","Right")
 
 local Autostats = Player:CreateSector("Auto Stats","Left")
 local Fake = Player:CreateSector("Fake Data","Left")
@@ -42,6 +111,7 @@ Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: B
 BoneMob = {"Reborn Skeleton [Lv. 1975]","Living Zombie [Lv. 2000]","Demonic Soul [Lv. 2025]","Posessed Mummy [Lv. 2050]"}
 DoughMob = {"Cookie Crafter [Lv. 2200]","Cake Guard [Lv. 2225]","Baking Staff [Lv. 2250]"}
 MaterialMethod = {"Radioactive Material","Mystic Droplet","Magma Ore","Angel Wings","Leather","Scrap Metal","Demonic Wisp","Vampire Fang","Conjured Cocoa","Dragon Scale","Gunpowder","Fish Tail","Mini Tusk"}
+EctoMon = {"Ship Dechhand [Lv. 1250]","Ship Engineer [Lv. 1275]","Ship Steward [Lv. 1300]","Ship Officer [Lv. 1325]"}
 
 function MeleeBuy(N1,N2,N3,N4)
     BuyMelee:AddButton(N1,function()
@@ -63,8 +133,6 @@ AutoFarm:AddSeperator("Auto Farm")
 AutoFarm:AddToggle("Auto Farm",_G.AutoFarm,function(t)
     _G.AutoFarm = t
 end)
-
-AutoFarm:AddSeperator("Auto Farm Material")
 
 local LSelectMaterial = AutoFarm:AddDropdown("Select Material",MaterialMethod,_G.SelectMaterial,false,function(t)
     _G.SelectMaterial = t
@@ -89,43 +157,56 @@ AutoFarm:AddToggle("Auto Sharkman Hop",_G.AutoSharkmanHop,function(t)
     _G.AutoSharkmanHop = t
 end)
 
-AutoFarm:AddSeperator("Auto Saber")
+AutoFarm:AddToggle("Auto Death Step",_G.AutoDeathStep,function(t)
+    _G.AutoDeathStep = t
+end)
+
+AutoFarm:AddToggle("Auto Death Step Hop",_G.AutoDeathStepHop,function(t)
+    _G.AutoDeathStepHop = t
+end)
+
+AutoFarm:AddSeperator("Sea 1")
 
 AutoFarm:AddToggle("Auto Saber",_G.AutoSaber,function(t)
     _G.AutoSaber = t
 end)
 
-AutoFarm:AddSeperator("Auto Sea")
-
 AutoFarm:AddToggle("Auto Sea 2",_G.AutoSea2,function(t)
     _G.AutoSea2 = t
 end)
 
-AutoFarm:AddSeperator("Auto Bartilo")
+AutoFarm:AddSeperator("Sea 2")
 
 AutoFarm:AddToggle("Auto Bartilo",_G.AutoBartilo,function(t)
     _G.AutoBartilo = t
 end)
 
-AutoFarm:AddSeperator("Auto Race")
+AutoFarm:AddToggle("Auto Rengoku",_G.AutoRengoku,function(t)
+    _G.AutoRengoku = t
+end)
+
+AutoFarm:AddToggle("Auto Farm Ectoplasm",_G.AutoEctoplasm,function(t)
+    _G.AutoEctoplasm = t
+end)
 
 AutoFarm:AddToggle("Auto Race V2",_G.AutoRaceV2,function(t)
     _G.AutoRaceV2 = t
 end)
 
-AutoFarm:AddSeperator("Auto Elite")
+AutoFarm:AddSeperator("Sea 3")
 
 AutoFarm:AddToggle("Auto Elite",_G.AutoElite,function(t)
     _G.AutoElite = t
 end)
 
-AutoFarm:AddSeperator("Auto Farm Bone")
-
 AutoFarm:AddToggle("Auto Farm Bone",_G.AutoFarmBone,function(t)
     _G.AutoFarmBone = t
 end)
 
-AutoFarm:AddSeperator("Auto Dough King")
+AutoFarm:AddToggle("Auto Kill Cake Mon",_G.AutoCakeMon,function(t)
+    _G.AutoCakeMon = t
+end)
+
 
 AutoFarm:AddToggle("Auto Dough King V1",_G.AutoDoughKingV1,function(t)
     _G.AutoDoughKingV1 = t
@@ -137,6 +218,7 @@ end)
 
 local SelectWeapon = SelectSection:AddDropdown("Select Weapon",Weapon,_G.SWeapon,false,function(t)
     _G.SWeapon = t
+    print(t)
 end)
 
 SelectSection:AddButton("Refresh Weapon",function()
@@ -188,6 +270,16 @@ Autostats:AddToggle("Auto Gun",_G.Gun,function(t)
 end)
 Autostats:AddToggle("Auto Blox Fruit",_G.BF,function(t)
     _G.BF = t
+end)
+
+CustomMethod:AddSlider("Position X",1,0,100,1,function(t)
+    _G.X = t
+end)
+CustomMethod:AddSlider("Position Y",1,20,100,1,function(t)
+    _G.Y = t
+end)
+CustomMethod:AddSlider("Position Z",1,0,100,1,function(t)
+    _G.Z = t
 end)
 
 Fake:AddToggle("Fake Beli",_G.FakeBeli,function(t)
@@ -361,75 +453,6 @@ spawn(function()
         end)
     end
 end)
-
-local PlaceID = game.PlaceId
-local AllIDs = {}
-local foundAnything = ""
-local actualHour = os.date("!*t").hour
-local Deleted = false
-local File = pcall(function()
-    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
-end)
-if not File then
-    table.insert(AllIDs, actualHour)
-    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-end
-function TPReturner()
-    local Site;
-    if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
-    else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-    end
-    local ID = ""
-    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-        foundAnything = Site.nextPageCursor
-    end
-    local num = 0;
-    for i,v in pairs(Site.data) do
-        local Possible = true
-        ID = tostring(v.id)
-        if tonumber(v.maxPlayers) > tonumber(v.playing) then
-            for _,Existing in pairs(AllIDs) do
-                if num ~= 0 then
-                    if ID == tostring(Existing) then
-                        Possible = false
-                    end
-                else
-                    if tonumber(actualHour) ~= tonumber(Existing) then
-                        local delFile = pcall(function()
-                            delfile("NotSameServers.json")
-                            AllIDs = {}
-                            table.insert(AllIDs, actualHour)
-                        end)
-                    end
-                end
-                num = num + 1
-            end
-            if Possible == true then
-                table.insert(AllIDs, ID)
-                wait()
-                pcall(function()
-                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-                    wait()
-                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
-                end)
-                wait(4)
-            end
-        end
-    end
-end
-
-function Teleport()
-    while wait() do
-        pcall(function()
-            TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
-    end
-end
 
 function CheckQuest()
     local Id = game.PlaceId
@@ -983,26 +1006,18 @@ end
 
 spawn(function()
     while task.wait() do
-        if _G.AutoFarmMaterial or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoBartilo or _G.AutoDoughKingV2 then
+        if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoBartilo or _G.AutoDoughKingV2 then
             pcall(function()
                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
                         if v.Name == y.Name then
                             v.HumanoidRootPart.CFrame = y.HumanoidRootPart.CFrame
-                        end
-                    end
-                end
-                 for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if v.Name == y.Name then
                             v.HumanoidRootPart.CanCollide = false
                             y.HumanoidRootPart.CanCollide = false
-                            v.Humanoid.WalkSpeed = 0
-                            y.Humanoid.WalkSpeed = 0
                             v.Humanoid:ChangeState(2)
                             y.Humanoid:ChangeState(2)
-                            v.Humanoid.JumpPower = 0
-                            y.Humanoid.JumpPower = 0
+                            v.Humanoid.WalkSpeed = 0
+                            y.Humanoid.WalkSpeed = 0
                             if sethiddenproperty then
                                 sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
                             end
@@ -1029,8 +1044,6 @@ spawn(function()
                         y.Humanoid.WalkSpeed = 0
                         v.Humanoid:ChangeState(2)
                         y.Humanoid:ChangeState(2)
-                        v.Humanoid.JumpPower = 0
-                        y.Humanoid.JumpPower = 0
                         if sethiddenproperty then
                             sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",math.huge)
                         end
@@ -1043,8 +1056,8 @@ spawn(function()
 end)
 
 spawn(function()
-    while task.wait() do
-        if _G.AutoFarmMaterial or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman or _G.AutoDoughKingV2 then
+    while task.wait(.1) do
+        if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman or _G.AutoDoughKingV2 then
             pcall(function()
                 local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
                 local CombatFramework = debug.getupvalues(Module)[2]
@@ -1128,24 +1141,24 @@ spawn(function()
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
                                     EquipTool(_G.SWeapon)
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoFarm or not v.Parent or v.Humanoid.Health <= 0
                             end
-                        end
-                    end
-                    for i,v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
-                        if string.find(v.Name,NameMon) then
-                            repeat task.wait()
-                                Tween(v.CFrame * CFrame.new(0,20,0))
-                            until not _G.AutoFarm or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
                     for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
                         if y.Name == Mon then
                             if y:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
-                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoFarm or not y.Parent or y.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                    for i,v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
+                        if string.find(v.Name,NameMon) then
+                            if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude >= 10 then
+                                Tween(v.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                             end
                         end
                     end
@@ -1173,7 +1186,7 @@ spawn(function()
                             if v.Name == "Swan Pirate [Lv. 775]" then
                                 repeat task.wait()
                                     if v:FindFirstChild("HumanoidRootPart") then
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         EquipTool(_G.SWeapon)
                                     end
                                 until not _G.AutoBartilo
@@ -1184,7 +1197,7 @@ spawn(function()
                                 repeat task.wait()
                                     if y:FindFirstChild("HumanoidRootPart") then
                                         if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - y.HumanoidRootPart.Position).Magnitude >= 100 then
-                                            Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                            Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         end
                                     end
                                 until not _G.AutoBartilo
@@ -1201,7 +1214,7 @@ spawn(function()
                             if v.Name == "Jeremy [Lv. 850] [Boss]" then
                                 repeat task.wait()
                                     if v:FindFirstChild("HumanoidRootPart") then
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         EquipTool(SelectWeapon)
                                     end
                                 until not _G.AutoBartilo
@@ -1211,7 +1224,7 @@ spawn(function()
                             if y.Name == "Jeremy [Lv. 850] [Boss]" then
                                 repeat task.wait()
                                     if y:FindFirstChild("HumanoidRootPart") then
-                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                     end
                                 until not _G.AutoBartilo
                             end
@@ -1246,6 +1259,39 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
+            if _G.AutoEctoplasm then
+                Tween(CFrame.new(928.4073486328125, 125.99317169189453, 33122.0703125))
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for x,y in pairs(EctoMon) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                EquipTool(_G.SWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                            until not _G.AutoEctoplasm or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                for x,y in pairs(EctoMon) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                            until not _G.AutoEctoplasm or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
             if _G.AutoRaceV2 then
                 local Back = game.Players.LocalPlayer.Backpack
                 game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Alchemist","1")
@@ -1261,7 +1307,7 @@ spawn(function()
                         if v.Name == "Zombie [Lv. 950]" then
                             repeat task.wait()
                                 if v:FindFirstChild("HumanoidRootPart") then
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                     EquipTool(_G.SWeapon)
                                 end
                             until Back:FindFirstChild("Flower 3")
@@ -1271,7 +1317,7 @@ spawn(function()
                         if y.Name == "Zombie [Lv. 950]" then
                             repeat task.wait()
                                 if y:FindFirstChild("HumanoidRootPart") then
-                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 end
                             until Back:FindFirstChild("Flower 3")
                         end
@@ -1301,25 +1347,26 @@ spawn(function()
                             if v.Name == "Tide Keeper [Lv. 1475] [Boss]" then
                                 if v:FindFirstChild("HumanoidRootPart") then
                                     repeat task.wait()
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         EquipTool(_G.SWeapon)
                                     until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
                                 end
                             end
                         end
                         for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
-                            if v:FindFirstChild("Tide Keeper [Lv. 1475] [Boss]") then
+                            if v.Name == "Tide Keeper [Lv. 1475] [Boss]" then
                                 if v:FindFirstChild("HumanoidRootPart") then
                                     repeat task.wait()
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                     until not _G.AutoSharkman or not v.Parent or v.Humanoid.Health <= 0
                                 end
                             else
                                 if _G.AutoSharkmanHop then
-                                    if not v:FindFirstChild("Tide Keeper [Lv. 1475] [Boss]") then
-                                        wait(5)
-                                        Teleport()
-                                        --game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+                                    if not game.Players.LocalPlayer.Backpack:FindFirstChild("Water Key") then
+                                        if not v:FindFirstChild("Tide Keeper [Lv. 1475] [Boss]") then
+                                            wait(2.5)
+                                            Teleport()
+                                        end
                                     end
                                 end
                             end
@@ -1327,6 +1374,50 @@ spawn(function()
                     end
                 else
                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySharkmanKarate",true)
+                end
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoDeathStep then
+                if not game.Players.LocalPlayer.Backpack:FindFirstChild("Library Key") then
+                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == "Awakened Ice Admiral [Lv. 1400] [Boss]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                    EquipTool(_G.SWeapon)
+                                until not _G.AutoDeathStep or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                    for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if v.Name == "Awakened Ice Admiral [Lv. 1400] [Boss]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                until not _G.AutoDeathStep or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        else
+                            if _G.AutoDeathStepHop then
+                                if not game.Players.LocalPlayer.Backpack:FindFirstChild("Library Key") then
+                                    if not v:FindFirstChild("Awakend Ice Admiral [Lv. 1400] [Boss]") then
+                                        wait(2.5)
+                                        Teleport()
+                                    end
+                                end
+                            end
+                        end
+                    end
+                else
+                    Tween(CFrame.new(6370.19580078125, 296.63446044921875, -6838.767578125))
+                    EquipTool("Library Key")
+                    wait(.2)
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyDeathStep",true)
                 end
             end
         end)
@@ -1355,7 +1446,7 @@ spawn(function()
                                     if v:FindFirstChild("HumanoidRootPart") then
                                         repeat task.wait()
                                             EquipTool(_G.SWeapon)
-                                            Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                            Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         until not _G.AutoSea2
                                     end
                                 end
@@ -1364,7 +1455,7 @@ spawn(function()
                                 if y.Name == "Ice Admiral [Lv. 700] [Boss]" then
                                     if y:FindFirstChild("HumanoidRootPart") then
                                         repeat task.wait()
-                                            Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                            Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         until not _G.AutoSea2
                                     end
                                 end
@@ -1431,7 +1522,7 @@ spawn(function()
                                 if v:FindFirstChild("HumanoidRootPart") then
                                     repeat task.wait()
                                         EquipTool(SelectWeapon)
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         v.HumanoidRootPart.Transparency = 0.5
                                         v.Humanoid.WalkSpeed = 0
                                         v.Humanoid.JumpPower = 0
@@ -1446,7 +1537,7 @@ spawn(function()
                             if y.Name == "Mob Leader [Lv. 120] [Boss]" then
                                 if y:FindFirstChild("HumanoidRootPart") then
                                     repeat task.wait()
-                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                     until not _G.AutoSaber
                                 end
                             end
@@ -1473,7 +1564,7 @@ spawn(function()
                                 if v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Humanoid") then
                                     repeat task.wait()
                                         EquipTool(_G.SWeapon)
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                         v.HumanoidRootPart.Transparency = 0.5
                                         v.Humanoid.WalkSpeed = 0
                                         v.Humanoid.JumpPower = 0
@@ -1488,7 +1579,7 @@ spawn(function()
                             if y.Name == "Saber Expert [Lv. 200] [Boss]" then
                                 if y:FindFirstChild("HumanoidRootPart") then
                                     repeat task.wait()
-                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                     until not _G.AutoSaber
                                 end
                             end
@@ -1508,7 +1599,8 @@ spawn(function()
                     if v.Name == "Diablo [Lv. 1750]" or v.Name == "Urban [Lv. 1750]" or v.Name == "Deandre [Lv. 1750]" then
                         if v:FindFirstChild("HumanoidRootPart") then
                             repeat task.wait()
-                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                EquipTool(_G.SWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                             until not _G.AutoElite or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
@@ -1517,7 +1609,7 @@ spawn(function()
                     if v.Name == "Diablo [Lv. 1750]" or v.Name == "Urban [Lv. 1750]" or v.Name == "Deandre [Lv. 1750]" then
                         if v:FindFirstChild("HumanoidRootPart") then
                             repeat task.wait()
-                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                             until not _G.AutoElite or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
@@ -1532,26 +1624,23 @@ spawn(function()
         pcall(function()
             if _G.AutoFarmMaterial then
                 MaterialMon()
-                if game:GetService("Players").LocalPlayer.Data.LastSpawnPoint.Value ~= SP then
-                    Tween(Pos)
-                else
-                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if v.Name == Mon then
-                            if v:FindFirstChild("HumanoidRootPart") then
-                                repeat task.wait()
-                                    EquipTool(_G.SWeapon)
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
-                            end
+                Tween(Pos)
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == Mon then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                EquipTool(_G.SWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                            until not _G.AutoFarmMaterial or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
-                    for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
-                        if v.Name == Mon then
-                            if v:FindFirstChild("HumanoidRootPart") then
-                                repeat task.wait()
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
-                            end
+                end
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                    if v.Name == Mon then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                            until not _G.AutoFarmMaterial or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
                 end
@@ -1573,7 +1662,7 @@ spawn(function()
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
                                     EquipTool(_G.SWeapon)
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
@@ -1584,12 +1673,45 @@ spawn(function()
                         if v.Name == y then
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
                     end
                     end
+                end
+            end
+        end)
+    end
+end)
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoCakeMon then
+                Tween(CFrame.new(-2021.32007, 37.7982254, -12028.7295))
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner")
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for x,y in pairs(DoughMob) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                EquipTool(_G.SWeapon)
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                            until not _G.AutoCakeMon or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+                end
+                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                for x,y in pairs(DoughMob) do
+                    if v.Name == y then
+                        if v:FindFirstChild("HumanoidRootPart") then
+                            repeat task.wait()
+                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                            until not _G.AutoCakeMon or not v.Parent or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
                 end
             end
         end)
@@ -1601,9 +1723,7 @@ spawn(function()
         pcall(function()
             if _G.AutoDoughKingV1 then
                 if not game.ReplicatedStorage:FindFirstChild("Cake Prince [Lv. 2300] [Raid Boss]") then
-                    if game:GetService("Players").LocalPlayer.Data.LastSpawnPoint.Value ~= "Loaf" then
-                        Tween(CFrame.new(-2021.32007, 37.7982254, -12028.7295))
-                    end
+                    Tween(CFrame.new(-2021.32007, 37.7982254, -12028.7295))
                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner")
                     for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
                     for x,y in pairs(DoughMob) do
@@ -1611,7 +1731,7 @@ spawn(function()
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
                                         EquipTool(_G.SWeapon)
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
@@ -1622,7 +1742,7 @@ spawn(function()
                         if v.Name == y then
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
@@ -1634,7 +1754,7 @@ spawn(function()
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
                                         EquipTool(_G.SWeapon)
-                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
@@ -1643,7 +1763,7 @@ spawn(function()
                         if v.Name == "Cake Prince [Lv. 2300] [Raid Boss]" then
                             if v:FindFirstChild("HumanoidRootPart") then
                                 repeat task.wait()
-                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                                 until not _G.AutoDoughKingV1 or not v.Parent or v.Humanoid.Health <= 0
                             end
                         end
@@ -1658,24 +1778,138 @@ spawn(function()
     while task.wait() do
         pcall(function()
             if _G.AutoDoughKingV2 then
-                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v.Name == "Dough King [Lv. 2300] [Raid Boss]" then
-                        if v:FindFirstChild("HumanoidRootPart") then
-                            repeat task.wait()
-                                EquipTool(_G.SWeapon)
-                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                            until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+                if not game.ReplicatedStorage:FindFirstChild("Dough King [Lv. 2300] [Raid Boss]") then
+                    for i,v in pairs(game.ReplicatedStorage.Remotes.CommF_:InvokeServer("getInventory")) do
+                        if v.Name == "Conjured Cocoa" then
+                            if v.Count <= 19 then
+                                Tween(CFrame.new(744.7930908203125, 24.76934242248535, -12637.7255859375))
+                                for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
+                                    if y.Name == "Chocolate Bar Battler [Lv. 2325]" then
+                                        if y:FindFirstChild("HumanoidRootPart") then
+                                            repeat task.wait()
+                                                Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                                EquipTool(_G.SWeapon)
+                                            until not _G.AutoDoughKingV2 or not y.Parent or y.Humanoid.Health <= 0
+                                        end
+                                    end
+                                end
+                                for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                                    if y.Name == "Chocolate Bar Battler [Lv. 2325]" then
+                                        if y:FindFirstChild("HumanoidRootPart") then
+                                            repeat task.wait()
+                                                Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                            until not _G.AutoDoughKingV2 or not y.Parent or y.Humanoid.Health <= 0
+                                        end
+                                    end
+                                end
+                            else
+                                if not game.Players.LocalPlayer.Backpack:FindFirstChild("God's Chalice") or not game.Players.LocalPlayer.Character:FindFirstChild("God's Chalice") then
+                                    for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
+                                        if y.Name == "Diablo [Lv. 1750]" or y.Name == "Urban [Lv. 1750]" or y.Name == "Deandre [Lv. 1750]" then
+                                            if y:FindFirstChild("HumanoidRootPart") then
+                                                repeat task.wait()
+                                                Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                                EquipTool(_G.SWeapon)
+                                                until not _G.AutoDoughKingV2 or not y.Parent or y.Humanoid.Health <= 0
+                                            end
+                                        end
+                                    end
+                                    for x,y in pairs(game.ReplicatedStorage:GetChildren()) do
+                                        if y.Name == "Diablo [Lv. 1750]" or y.Name == "Urban [Lv. 1750]" or y.Name == "Deandre [Lv. 1750]" then
+                                            if y:FindFirstChild("HumanoidRootPart") then
+                                                repeat task.wait()
+                                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                                until not _G.AutoDoughKingV2 or not y.Parent or y.Humanoid.Health <= 0
+                                            end
+                                        end
+                                    end
+                                else
+                                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SweetChaliceNpc")
+                                end
+                            end
+                        end
+                    end
+                    if game.Players.LocalPlayer.Backpack:FindFirstChild("Sweet Chalice") or game.Players.LocalPlayer.Character:FindFirstChild("Sweet Chalice") then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner")
+                        Tween(CFrame.new(-2021.32007, 37.7982254, -12028.7295))
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner")
+                        for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        for x,y in pairs(DoughMob) do
+                            if v.Name == y then
+                                if v:FindFirstChild("HumanoidRootPart") then
+                                    repeat task.wait()
+                                        EquipTool(_G.SWeapon)
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                    until not _G.AutoDoughKingV2 or not v.Parent or v.Humanoid.Health <= 0
+                                end
+                            end
+                        end
+                        end
+                        for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                        for x,y in pairs(DoughMob) do
+                            if v.Name == y then
+                                if v:FindFirstChild("HumanoidRootPart") then
+                                    repeat task.wait()
+                                        Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                    until not _G.AutoDoughKingV2 or not v.Parent or v.Humanoid.Health <= 0
+                                end
+                            end
+                        end
+                        end
+                    end
+                else
+                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == "Dough King [Lv. 2300] [Raid Boss]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    Tween(y.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                    EquipTool(_G.SWeapon)
+                                until not _G.AutoDoughKingV2 or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                    for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if v.Name == "Dough King [Lv. 2300] [Raid Boss]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                until not _G.AutoDoughKingV2 or not v.Parent or v.Humanoid.Health <= 0
+                            end
                         end
                     end
                 end
-                for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
-                    if v.Name == "Dough King [Lv. 2300] [Raid Boss]" then
-                        if v:FindFirstChild("HumanoidRootPart") then
-                            repeat task.wait()
-                                Tween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                            until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.AutoRengoku then
+                if not game.Players.LocalPlayer.Backpack:FindFirstChild("Hidden Key") then
+                    Tween(CFrame.new(5733.30615234375, 28.366647720336914, -6400.83837890625))
+                    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                        if v.Name == "Arctic Warrior [Lv. 1350]" or v.Name == "Snow Lurker [Lv. 1375]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    EquipTool(_G.SWeapon)
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                until not _G.AutoRengoku or not v.Parent or v.Humanoid.Health <= 0
+                            end
                         end
                     end
+                    for i,v in pairs(game.ReplicatedStorage:GetChildren()) do
+                        if v.Name == "Arctic Warrior [Lv. 1350]" or v.Name == "Snow Lurker [Lv. 1375]" then
+                            if v:FindFirstChild("HumanoidRootPart") then
+                                repeat task.wait()
+                                    Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                until not _G.AutoRengoku or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                else
+                    Tween(CFrame.new(6571.9853515625, 297.16973876953125, -6965.3515625))
                 end
             end
         end)
@@ -1781,7 +2015,6 @@ spawn(function()
     end
 
 end)
-
 
 spawn(function()
     while task.wait() do
@@ -1969,8 +2202,7 @@ spawn(function()
                             TextLabel.Size = UDim2.new(0, 200, 0, 50)
                             TextLabel.Font = Enum.Font.GothamBold
                             TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-                            TextLabel.TextScaled = true
-                            TextLabel.TextSize = 14.000
+                            TextLabel.TextSize = 30
                             TextLabel.TextStrokeTransparency = 0.000
                             TextLabel.TextWrapped = true
                         end
@@ -1983,31 +2215,79 @@ spawn(function()
     end
 end)
 
-local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
-local CombatFramework = debug.getupvalues(Module)[2]
-local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
-spawn(function()
-while task.wait() do
-    if _G.FastAttack then
-    pcall(function()
-        CamShake:Stop()
-        CombatFramework.activeController.attacking = false
-        CombatFramework.activeController.timeToNextAttack = 0
-        CombatFramework.activeController.increment = 3
-        CombatFramework.activeController.hitboxMagnitude = 100
-        CombatFramework.activeController.blocking = false
-        CombatFramework.activeController.timeToNextBlock = 0
-        CombatFramework.activeController.focusStart = 0
-    end)
-    end
-    task.wait()
+local plr = game.Players.LocalPlayer
+
+local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
+local CbFw2 = CbFw[2]
+
+function GetCurrentBlade() 
+    local p13 = CbFw2.activeController
+    local ret = p13.blades[1]
+    if not ret then return end
+    while ret.Parent~=game.Players.LocalPlayer.Character do ret=ret.Parent end
+    return ret
 end
+function AttackNoCD() 
+    local AC = CbFw2.activeController
+    for i = 1, 1 do 
+        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
+            plr.Character,
+            {plr.Character.HumanoidRootPart},
+            60
+        )
+        local cac = {}
+        local hash = {}
+        for k, v in pairs(bladehit) do
+            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
+                table.insert(cac, v.Parent.HumanoidRootPart)
+                hash[v.Parent] = true
+            end
+        end
+        bladehit = cac
+        if #bladehit > 0 then
+            local u8 = debug.getupvalue(AC.attack, 5)
+            local u9 = debug.getupvalue(AC.attack, 6)
+            local u7 = debug.getupvalue(AC.attack, 4)
+            local u10 = debug.getupvalue(AC.attack, 7)
+            local u12 = (u8 * 798405 + u7 * 727595) % u9
+            local u13 = u7 * 798405
+            (function()
+                u12 = (u12 * u9 + u13) % 1099511627776
+                u8 = math.floor(u12 / u9)
+                u7 = u12 - u8 * u9
+            end)()
+            u10 = u10 + 1
+            debug.setupvalue(AC.attack, 5, u8)
+            debug.setupvalue(AC.attack, 6, u9)
+            debug.setupvalue(AC.attack, 4, u7)
+            debug.setupvalue(AC.attack, 7, u10)
+            pcall(function()
+                for k, v in pairs(AC.animator.anims.basic) do
+                    v:Play()
+                end                  
+            end)
+            if plr.Character:FindFirstChildOfClass("Tool") and AC.blades and AC.blades[1] then 
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetCurrentBlade()))
+                game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "") 
+            end
+        end
+    end
+end
+spawn(function()
+    while task.wait(.1) do
+        if _G.FastAttack then
+            pcall(function()
+                AttackNoCD() 
+            end)
+        end
+    end
 end)
 
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 for i,v in pairs(game.Workspace["_WorldOrigin"]:GetChildren()) do
                     if v:IsA("Part") or v:IsA("MeshPart") then
                         v:Destroy() 
@@ -2020,7 +2300,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.TweenMouse or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoRaceV2 or _G.TweenMouse or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
                     Noclip.Name = "BodyClip"
@@ -2038,7 +2318,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
             else
                 game.Players.LocalPlayer.Character.Humanoid:ChangeState(18)
@@ -2050,7 +2330,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 for i,v in pairs(getconnections(game.Players.LocalPlayer.PlayerGui.Main.Dialogue.Option1.MouseButton1Click)) do
                     v:Fire()
                 end
@@ -2061,7 +2341,7 @@ end)
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.StoreFruit or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
+            if _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoDoughKingV2 or _G.AutoFarm or _G.AutoNextIsland or _G.AutoSaber or _G.AutoSea2 or _G.AutoBartilo or _G.AutoFarmBone or _G.StoreFruit or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman then
                 for i,v in pairs(game.Players.LocalPlayer.PlayerGui.Notifications:GetChildren()) do
                     v:Destroy()
                 end
