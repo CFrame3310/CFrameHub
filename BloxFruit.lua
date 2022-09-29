@@ -159,7 +159,7 @@ local AutoFarm = Main:CreateSector("Auto Farm","Left")
 local SelectSection = Main:CreateSector("Select Weapon","Right")
 local Settings = Main:CreateSector("Property","Right")
 local AutoSkill = Main:CreateSector("Auto Skill","Right")
-local CustomMethod = Main:CreateSector("Custom Distance","Right")
+local CustomMethod = Main:CreateSector("Custom","Right")
 
 local Autostats = Player:CreateSector("Auto Stats","Left")
 local Fake = Player:CreateSector("Fake Data","Left")
@@ -186,7 +186,6 @@ Bossses ={}
 Fruit= {"Bomb-Bomb","Spike-Spike","Chop-Chop","Spring-Spring","Kilo-Kilo","Smoke-Smoke","Spin-Spin","Flame-Flame","Brid-Bird: Falcon","Ice-Ice","Sand-Sand","Dark-Dark","Revive-Revive","Diamond-Diamond","Light-Light","Love-Love","Rubber-Rubber","Barrier-Barrier","Magma-Magma","Door-Door","Quake-Quake","Human-Human: Buddha","String-String","Bird-Bird: Phoenix","Rumble-Rumble","Paw-Paw","Gravity-Gravity","Dough-Dough","Shadow-Shadow","Venom-Venom","Control-Control","Soul-Soul","Dragon-Dragon"}
 Melee = {"Combat","Black Leg","Electro","Fishman Karate","Dragon Claw","Superhuman","Death Step","Electric Claw","Sharkman Karate","Dragon Talon","Godhuman"}
 Chip = {"Flame","Ice","Quake","Light","Dark","String","Rumble","Magma","Human: Buddha","Sand","Bird: Phoenix","Dough"}
-BoneMob = {"Reborn Skeleton [Lv. 1975]","Living Zombie [Lv. 2000]","Demonic Soul [Lv. 2025]","Posessed Mummy [Lv. 2050]"}
 DoughMob = {"Cookie Crafter [Lv. 2200]","Cake Guard [Lv. 2225]","Baking Staff [Lv. 2250]"}
 MaterialMethod = {"Radioactive Material","Mystic Droplet","Magma Ore","Angel Wings","Leather","Scrap Metal","Demonic Wisp","Vampire Fang","Conjured Cocoa","Dragon Scale","Gunpowder","Fish Tail","Mini Tusk"}
 EctoMon = {"Ship Dechhand [Lv. 1250]","Ship Engineer [Lv. 1275]","Ship Steward [Lv. 1300]","Ship Officer [Lv. 1325]"}
@@ -380,6 +379,11 @@ Settings:AddToggle("Bring Mob",true,function(t)
     _G.Bring = t
 end)
 
+Settings:AddToggle("FPS Lock",true,function(t)
+    _G.LockFPS = t
+end)
+
+
 Autostats:AddToggle("Auto Melee",_G.Melee,function(t)
     _G.Melee = t
 end)
@@ -408,6 +412,18 @@ AutoSkill:AddToggle("Auto Skill C",_G.SkillC,function(t)
 end)
 AutoSkill:AddToggle("Auto Skill V",_G.SkillV,function(t)
     _G.SkillV = t
+end)
+
+pcall(function()
+if _G.FD then
+	FastDefault =  _G.FD
+else
+	FastDefault = 2
+end
+end)
+
+CustomMethod:AddSlider("Fast Attack Delay ",0,FastDefault,10,1,function(t)
+    _G.FD = t
 end)
 
 CustomMethod:AddSlider("Position X",1,0,100,1,function(t)
@@ -1245,7 +1261,7 @@ function AttackNoCD()
     end
 end
 spawn(function()
-    while task.wait() do
+    while task.wait(_G.FD / 10) do
         if _G.FastAttack then
             pcall(function()
                 AttackNoCD() 
@@ -1317,19 +1333,23 @@ spawn(function()
 end)
 
 spawn(function()
-    while task.wait(.1) do
-        if _G.AutoFarmBoss or _G.AutoGunMas or _G.AutoFruitMas or _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoFarm or _G.AutoBartilo or _G.AutoFarmBone or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman or _G.AutoDoughKingV2 then
-            pcall(function()
-                local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
-                local CombatFramework = debug.getupvalues(Module)[2]
-                local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
-                CamShake:Stop()
-                CombatFramework.activeController.hitboxMagnitude = 180
-                game:GetService'VirtualUser':CaptureController()
-                game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
-            end)
-        end
-    end
+	while task.wait(.2) do
+		if _G.FastAttack then
+			print("Fast attack is enable")
+		else
+			if _G.AutoFarmBoss or _G.AutoGunMas or _G.AutoFruitMas or _G.AutoCakeMon or _G.AutoRengoku or _G.AutoDeathStep or _G.AutoEctoplasm or _G.AutoFarmMaterial or _G.AutoFarm or _G.AutoBartilo or _G.AutoSez2 or _G.AutoRaceV2 or _G.AutoDoughKingV1 or _G.AutoElite or _G.AutoSharkman or _G.AutoDoughKingV2 then
+				pcall(function()
+					local Module = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
+					local CombatFramework = debug.getupvalues(Module)[2]
+					local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
+					CamShake:Stop()
+					CombatFramework.activeController.hitboxMagnitude = 180
+					game:GetService'VirtualUser':CaptureController()
+					game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))
+				end)
+			end
+		end
+	end
 end)
 
 
@@ -1922,6 +1942,7 @@ spawn(function()
                                 v.Humanoid.WalkSpeed = 0
                                 v.Head.CanCollide = false
                                 Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
+                                BoneMob = v.Name
                             until not _G.AutoFarmBone or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
@@ -1936,6 +1957,35 @@ spawn(function()
                     elseif v.Name == "Posessed Mummy [Lv. 2050]" then
                         Tween(v.HumanoidRootPart.CFrame * CFrame.new(_G.X,_G.Y,_G.Z))
                     end
+                end
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait() do
+        if _G.Bring and _G.AutoFarmBone then
+            pcall(function()
+                for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                for x,y in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if v.Name == BoneMob and y.Name == BoneMob then
+                        v.Humanoid.WalkSpeed = 0
+                        y.Humanoid.WalkSpeed = 0
+                        v.HumanoidRootPart.Size = Vector3.new(50,50,50)
+                        y.HumanoidRootPart.Size = Vector3.new(50,50,50)
+                        v.Humanoid:ChangeState(14)
+                        y.Humanoid:ChangeState(14)
+                        v.HumanoidRootPart.CanCollide = false
+                        y.HumanoidRootPart.CanCollide = false
+                        v.Head.CanCollide = false
+                        y.Head.CanCollide = false
+                        y.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+                        if v.Humanoid:FindFirstChild("Animator") then
+                            v.Humanoid.Animator:Destroy()
+                        end
+                    end
+                end
                 end
             end)
         end
@@ -2860,17 +2910,31 @@ spawn(function()
     end
 end)
 
+spawn(function()
+	while task.wait() do
+		pcall(function()
+			if  _G.LockFPS then
+				setfpscap(10) 
+			else	
+				setfpscap(60)
+			end
+		end)
+	end
+end)
+
 local CharParts = {}
 game:GetService("RunService").Stepped:connect(function()
-    if _G.NoClip then
-        for i = 1, #CharParts do
-            CharParts[i].CanCollide = false
-        end
-    else
-        for i = 1, #CharParts do
-            CharParts[i].CanCollide = true
-        end
-    end
+	pcall(function()
+		if _G.NoClip then
+			for i = 1, #CharParts do
+				CharParts[i].CanCollide = false
+			end
+		else
+			for i = 1, #CharParts do
+				CharParts[i].CanCollide = true
+			end
+		end
+	end)
 end)
 
 function SetupCharCollide(Char)
