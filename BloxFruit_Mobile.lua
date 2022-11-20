@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 pcall(function()
 _, Protected_by_MoonSecV2, Discord = 'discord.gg/gQEH2uZxUk'
 
@@ -9,4 +7,3 @@ _, Protected_by_MoonSecV2, Discord = 'discord.gg/gQEH2uZxUk'
 
     
 end)
->>>>>>> b88eb1c606f20eba59fb524483452967e3ce1d96
