@@ -21,17 +21,17 @@ end
 function Function:newText(P)
     local Text = Instance.new('TextLabel',Frame)
     local Stroke = Instance.new('UIStroke',Text)
-	Text.Name = tostring(CurrentText)
+    Text.Name = tostring(CurrentText)
     Text.Size = UDim2.new(0,0,0,35)
     Text.BackgroundTransparency = 1
     Text.TextSize = 30
     Text.Font = 'SourceSansBold'
-	Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-	Text.TextStrokeTransparency = 0
+    Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    Text.TextStrokeTransparency = 0
     Text.Text = tostring(P)
     Stroke.Thickness = 2
-	task.wait(3)
+    task.wait(3)
     Text:Destroy()
 end
 return Function
