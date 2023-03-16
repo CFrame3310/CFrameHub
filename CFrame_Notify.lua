@@ -1,5 +1,5 @@
 local Gui = game:GetService("Players").LocalPlayer.PlayerGui;
-
+local Function = {}
 if not Gui:FindFirstChild('CFrame_Notify') then
     getgenv().ScreenUi = Instance.new('ScreenGui',Gui)
     ScreenUi.Name = 'CFrame_Notify'
@@ -19,11 +19,11 @@ if not Gui:FindFirstChild('CFrame_Notify'):FindFirstChild('CFrame_Frame'):FindFi
     UiList.UiList = 'LayoutOrder'
 end
 
-local function newText(P)
+function Function:newText(P)
     local Text = Instance.new('TextLabel',Frame)
     local Stroke = Instance.new('UIStroke',Text)
 	Text.Name = tostring(CurrentText)
-    Text.Size = UDim2.new(0,.5,.5,0)
+    Text.Size = UDim2.new(0,0,0,35)
     Text.BackgroundTransparency = 1
     Text.TextSize = 30
     Text.Font = 'SourceSansBold'
@@ -32,7 +32,7 @@ local function newText(P)
 	Text.TextStrokeTransparency = 0
     Text.Text = tostring(P)
     Stroke.Thickness = 2
-	task.wait(1)
+	task.wait(3)
     Text:Destroy()
 end
-newText('Hello')
+return Function
