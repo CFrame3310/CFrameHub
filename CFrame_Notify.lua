@@ -16,7 +16,6 @@ if not Gui:FindFirstChild('CFrame_Notify'):FindFirstChild('CFrame_Frame'):FindFi
     getgenv().UiList = Instance.new('UIListLayout',Frame)
     UiList.HorizontalAlignment = 'Center'
     UiList.VerticalAlignment = 'Top'
-    UiList.UiList = 'LayoutOrder'
 end
 
 function Function:newText(P)
