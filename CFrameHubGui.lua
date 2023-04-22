@@ -86,9 +86,9 @@ local function MakeDraggable(topbarobject, object)
 end
 
 local Create = {}
-    function Create:CreateWindow(Icon)
+    function Create:CreateWindow(Icon,Hidebutton)
         local FocusUI = false ; -- tap
-
+	Icon = nil
         if Icon == nil then
             Icon = 12869780066
         end
@@ -534,7 +534,7 @@ local Tab = {}
         _G.ToogleUI = true
 
 		game:GetService("UserInputService").InputBegan:Connect(function(input)
-			if input.KeyCode == Enum.KeyCode.RightControl then
+			if input.KeyCode == Hidebutton then
 				if library.toggledui == false then
                     if Scrolling_PageMain.Visible == true and _G.ToogleUI == true then
                         Scrolling_PageMain.Visible = false -- 
