@@ -1,5 +1,28 @@
+do  local uix =  game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules:FindFirstChild("CloseButton")  if uix then uix:Destroy() end end
 do  local ui =  game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules:FindFirstChild("CFrameHUB")  if ui then ui:Destroy() end end
+local CloseScreen = Instance.new("ScreenGui")
+local CloseButton = Instance.new("TextButton")
 
+CloseScreen.Name = "CloseButton"
+CloseScreen.Parent = game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules
+CloseScreen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = CloseScreen
+CloseButton.BackgroundColor3 = Color3.fromRGB(0,0,0)
+CloseButton.BorderSizePixel = 3
+CloseButton.Position = UDim2.new(0.75, 0, 0.05, 0)
+CloseButton.Size = UDim2.new(0,25,0,25)
+CloseButton.Font = Enum.Font.DenkOne
+CloseButton.Text = ''
+CloseButton.TextColor3 = Color3.fromRGB(255,255,255)
+CloseButton.TextScaled = true
+CloseButton.TextSize = 14.000
+CloseButton.TextWrapped = true
+CloseButton.MouseButton1Click:Connect(function()
+    game:GetService("VirtualInputManager"):SendKeyEvent(true,"RightControl",false,game)
+	game:GetService("VirtualInputManager"):SendKeyEvent(false,"RightControl",false,game)
+end)
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -86,9 +109,9 @@ local function MakeDraggable(topbarobject, object)
 end
 
 local Create = {}
-    function Create:CreateWindow(Icon,Hidebutton)
+    function Create:CreateWindow(Icon)
         local FocusUI = false ; -- tap
-	Icon = nil
+
         if Icon == nil then
             Icon = 12869780066
         end
@@ -101,7 +124,7 @@ local Create = {}
         Main.BackgroundTransparency = 1
         Main.BorderSizePixel = 0
         Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-        Main.Size = UDim2.new(0, 560, 0, 590) -- Change Here
+        Main.Size = UDim2.new(0, 560, 0, 390) -- Change Here
 
         local PageTab = Instance.new("Frame")
         PageTab.Name = "PageTab"
@@ -183,10 +206,10 @@ local Create = {}
 		local Container_Page = Instance.new("Frame",Main)
 		Container_Page.Name = ""
 		Container_Page.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Container_Page.Size = UDim2.new(0, 560, 0, 510) -- Here
+		Container_Page.Size = UDim2.new(0, 560, 0, 310) -- Here
 		Container_Page.BackgroundTransparency = 1
 		Container_Page.AnchorPoint = Vector2.new(0.5, 0.5)
-        Container_Page.Position = UDim2.new(0.5, 0, 0.55, 0)
+        Container_Page.Position = UDim2.new(0.5, 0, 0.6, 0)
 		Container_Page.ClipsDescendants = true
 		
 		local PageFolder = Instance.new("Folder")
@@ -307,7 +330,7 @@ local Tab = {}
         PageMain.BackgroundTransparency = 0
         PageMain.BorderSizePixel = 0
         PageMain.Position = UDim2.new(0, 0, 0.14, 0)
-        PageMain.Size = UDim2.new(0, 560, 0, 590) -- here
+        PageMain.Size = UDim2.new(0, 560, 0, 390) -- here
         PageMain.Visible = true
 		PageMain.ClipsDescendants = true
 		PageMain.LayoutOrder = PageOrders
@@ -325,7 +348,7 @@ local Tab = {}
         Scrolling_PageMain.BackgroundTransparency = 1
         Scrolling_PageMain.BorderSizePixel = 0
         Scrolling_PageMain.Position = UDim2.new(0.5, 0, 0.45, 0)
-        Scrolling_PageMain.Size = UDim2.new(0, 560, 0, 500) -- here
+        Scrolling_PageMain.Size = UDim2.new(0, 560, 0, 300) -- here
         Scrolling_PageMain.ScrollBarImageColor3 = Color3.fromRGB(70, 80, 120)
         Scrolling_PageMain.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
         Scrolling_PageMain.CanvasSize = UDim2.new(0, 0, 0, 2)
@@ -349,7 +372,7 @@ local Tab = {}
         PageLeft.BackgroundColor3 = Color3.fromRGB(255, 25, 255)
         PageLeft.BackgroundTransparency = 1
         PageLeft.BorderSizePixel = 0
-        PageLeft.Size = UDim2.new(0,250, 0,425)
+        PageLeft.Size = UDim2.new(0,250, 0,225)
 		--PageLeft.Position = UDim2.new(0,0,100,0)
     
         local UIListLayout_Pageleft = Instance.new("UIListLayout")
@@ -363,7 +386,7 @@ local Tab = {}
         PageRight.BackgroundColor3 = Color3.fromRGB(25, 255, 255)
         PageRight.BackgroundTransparency = 1
         PageRight.BorderSizePixel = 0
-        PageRight.Size = UDim2.new(0,250, 0,425)
+        PageRight.Size = UDim2.new(0,250, 0,225)
 
         local UIListLayout_Pageright = Instance.new("UIListLayout")
         UIListLayout_Pageright.Parent = PageRight
@@ -385,7 +408,7 @@ local Tab = {}
         TweenService:Create(
             PageMain,
             TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
-            {Size = UDim2.new(0, 560, 0, 590)}
+            {Size = UDim2.new(0, 560, 0, 390)}
         ):Play()
 
 		Icon_Tab.MouseButton1Click:connect(function()
@@ -393,23 +416,31 @@ local Tab = {}
             Scrolling_PageMain.Visible = false -- 
 
 			if PageMain.Name == text.."_PageMain" then
+                task.wait(.25)
 				UIPage:JumpToIndex(PageMain.LayoutOrder)
+                task.wait(.25)
+                Scrolling_PageMain.Visible = true
+                --[[ TweenService:Create(
+                    PageMain,
+                    TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
+                    {Size = UDim2.new(0, 560, 0, 0)} -- Here X
+                ):Play()
+
+                task.wait(0.25)
 
                 TweenService:Create(
                     PageMain,
                     TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
-                    {Size = UDim2.new(0, 560, 0, 0)} -- Here X
-                ):Play() task.wait(0.25)
-                TweenService:Create(
-                    PageMain,
-                    TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
-                    {Size = UDim2.new(0, 560, 0, 590)} -- Here X,Y
-                ):Play() task.wait(0.25)
+                    {Size = UDim2.new(0, 560, 0, 390)} -- Here X,Y
+                ):Play()
+                
+                task.wait(0.25)
+                
                 TweenService:Create(
                     Scrolling_PageMain,
                     TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
                     {Visible = true}
-                ):Play()
+                ):Play() ]]
 			end
 
 			for i ,v in next , Scrolling_PageTab:GetChildren() do
@@ -441,6 +472,8 @@ local Tab = {}
                     TweenInfo.new(0.25, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out),
                     {Transparency = 0}
                 ):Play()
+                TabFrame_Icon.BackgroundTransparency = 0
+                Stroke.Transparency = 0
 			end
 		end)
 		if FocusUI == false then
@@ -529,54 +562,86 @@ local Tab = {}
         MakeDraggable(Logo,Main)
 		local tween = game:GetService("TweenService")
 		local library = {currenttab = '',toggledui = false}
-		tween:Create(Main,TweenInfo.new(1,Enum.EasingStyle.Circular),{Size = UDim2.new(0, 560, 0, 590)}):Play() -- here
+		tween:Create(Main,TweenInfo.new(1,Enum.EasingStyle.Circular),{Size = UDim2.new(0, 560, 0, 390)}):Play() -- here
 
         _G.ToogleUI = true
 
 		game:GetService("UserInputService").InputBegan:Connect(function(input)
-			if input.KeyCode == Hidebutton then
+			if input.KeyCode == Enum.KeyCode.RightControl then
+                print('Input :'..tostring(input.KeyCode))
 				if library.toggledui == false then
-                    if Scrolling_PageMain.Visible == true and _G.ToogleUI == true then
-                        Scrolling_PageMain.Visible = false -- 
+                    --Scrolling_PageMain.Visible == true and
+                    if  _G.ToogleUI == true then
+                        --[[ Scrolling_PageMain.Visible = false -- 
 
                         TweenService:Create(
                             PageMain,
                             TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
                             {Size = UDim2.new(0, 560, 0, 0)} -- here
-                        ):Play() task.wait(0.25)
+                        ):Play()
+                        
+                        task.wait(0.25)
                         
                         Scrolling_PageTab.Visible = false
+
 						task.wait(0.25)
+
                         Frame_Logo.Visible = false --
+
                         TweenService:Create(
                             PageTab,
                             TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
                             {Size = UDim2.new(0, 0, 0, 60)}
-                        ):Play() task.wait(0.25)
+                        ):Play()
+                        
+                        task.wait(0.25) ]]
+
+                        Scrolling_PageMain.Visible = false
+                        task.wait(.1)
+                        Scrolling_PageTab.Visible = false
+                        task.wait(.1)
+                        Frame_Logo.Visible = false
+                        task.wait(.1)
                         _G.ToogleUI = false
 						Main.Visible = false
                     end
                 else
-                    if Scrolling_PageTab.Visible == false and _G.ToogleUI == false then
-						Main.Visible = true
+                    if _G.ToogleUI == false then
+						--[[ Main.Visible = true
+
                         TweenService:Create(
                             PageTab,
                             TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
                             {Size = UDim2.new(0, 560, 0, 60)} -- here
-                        ):Play() task.wait(0.25)
+                        ):Play() 
+                        
+                        task.wait(0.25)
     
                         Frame_Logo.Visible = true
-						task.wait(0.25)
+						
+                        task.wait(0.25)
+                        
                         Scrolling_PageTab.Visible = true --
     
                         TweenService:Create(
                             PageMain,
                             TweenInfo.new(0.25, Enum.EasingStyle.Circular, Enum.EasingDirection.Out),
-                            {Size = UDim2.new(0, 560, 0, 590)} -- here
+                            {Size = UDim2.new(0, 560, 0, 390)} -- here
                         ):Play()
+
 						task.wait(0.25)
+
                         Scrolling_PageMain.Visible = true --
+ ]]
+                        Main.Visible = true
+                        task.wait(.1)
+                        Frame_Logo.Visible = true
+                        task.wait(.1)
+                        Scrolling_PageTab.Visible = true
+                        task.wait(.1)
+                        Scrolling_PageMain.Visible = true
                         _G.ToogleUI = true
+
                     end
 				end
                 library.toggledui = not library.toggledui
@@ -2095,25 +2160,26 @@ local Items = {}
     return Tab
 end
 return Create
---[[ local Asset = {
-	['Marketcart'] = '11385419687',
-	['Setting'] = '7059346386',
-	['Human'] = '7059346386',
-	['Door'] = '12122755735',
-	['Hammer'] = '10885640695',
-	['House'] = '11347112419',
-	['Walking_Man'] = '9525534210',
-	['Eye'] = '7035631386',
-	['Chat'] = '11707615337',
-	['List'] = '11982164063',
-	['Coding'] = '11348555048'
-} 
-local Win = Create:CreateWindow(nil)
-local Main = Win:CreateTab("Main",Asset['House'])
-local Player = Win:CreateTab("Player",Asset['Human'])
-local Island = Win:CreateTab("Island",Asset['Door'])
-local Dungeon = Win:CreateTab("Dungeon",Asset['Eye'])
-local ShopMain = Win:CreateTab("Shop",Asset['Walking_Man'])
-local Misc = Win:CreateTab("Misc.",Asset['List'])
-local Status = Win:CreateTab("Status",Asset['Coding']) ]]
+--[[
+Test function
+local win = Create:CreateWindow(nil)
+local tab = win:CreateTab('Tab1',nil)
+local tab2 = win:CreateTab('Tab2',nil)
+local sec1 = tab:CreateSector('Sec1','Left')
+sec1:AddToggle('Toggle1',true,function()
+
+end)
+local sec2 = tab:CreateSector('Sec2','Right')
+sec2:AddToggle('Toggle2',false,function()
+
+end)
+
+local sec3 = tab2:CreateSector('Sec3','Left')
+sec3:AddToggle('Toggle4',false,function()
+
+end)
+local sec4 = tab2:CreateSector('Sec4','Right')
+sec4:AddToggle('Toggle4',true,function()
+
+end) ]]
 ------------------------
