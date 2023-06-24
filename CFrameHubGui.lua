@@ -1,10 +1,11 @@
-do  local uix =  game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules:FindFirstChild("CloseButton")  if uix then uix:Destroy() end end
-do  local ui =  game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules:FindFirstChild("CFrameHUB")  if ui then ui:Destroy() end end
+local coregui = gethui()
+do  local uix = coregui:FindFirstChild("CloseButton")  if uix then uix:Destroy() end end
+do  local ui = coregui:FindFirstChild("CFrameHUB")  if ui then ui:Destroy() end end
 local CloseScreen = Instance.new("ScreenGui")
 local CloseButton = Instance.new("TextButton")
 
 CloseScreen.Name = "CloseButton"
-CloseScreen.Parent = game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules
+CloseScreen.Parent = coregui
 CloseScreen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 CloseButton.Name = "CloseButton"
@@ -39,7 +40,7 @@ _G.ColorHub = Color3.fromRGB(105, 35, 255)
 
 local CFrameHUB = Instance.new("ScreenGui")
 CFrameHUB.Name = "CFrameHUB"
-CFrameHUB.Parent = game:GetService("CoreGui").RobloxGui.Modules.Server.ServerPlayer.DefaultServerPlayerModules
+CFrameHUB.Parent = coregui
 CFrameHUB.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 local function tablefound(ta, object)
