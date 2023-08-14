@@ -1,7 +1,7 @@
 local placeid = game.PlaceId
 
 if placeid == 2753915549 or placeid == 4442272183 or placeid == 7449423635 then 
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/BloxFruit.lua"))()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/CFrame3310/CFrameHub/main/BloxFruitV2.lua"))()
 else
   game.Players.LocalPlayer:Kick('Script doesn\'t support this game.')
   wait(3)
