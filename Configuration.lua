@@ -2,7 +2,7 @@ return {
   ['Blox Fruit'] = {
     ['Version'] = 'CCXLC-P0CW5-NGATN-S9Z7X-7P103',
     ['Premium'] = false,
-    ['Config] = {
+    ['Config'] = {
       ['Error'] = 'Invaild Version Please try again later or join.\ndiscord.gg/VERTxGCaFp'
     }
   },
