@@ -9,7 +9,7 @@ return {
   ['Bee Swarm Siumlator'] = {
     ['Version'] = '1.0',
     ['Premium'] = false,
-    ['Config] = {
+    ['Config'] = {
       ['Error'] = 'Invaild Version Please try again later or join.\ndiscord.gg/VERTxGCaFp'
     }
   }
