@@ -1,16 +1,11 @@
 return {
-  ['Blox Fruit'] = {
-    ['Version'] = 'CCXLC-P0CW5-NGATN-S9Z7X-7P103',
-    ['Premium'] = false,
-    ['Config'] = {
-      ['Error'] = 'Invaild Version Please try again later or join.\ndiscord.gg/VERTxGCaFp'
-    }
+  ['BF'] = {
+    ['__version'] = 1.0
   },
-  ['Bee Swarm Siumlator'] = {
-    ['Version'] = '1.0',
-    ['Premium'] = false,
-    ['Config'] = {
-      ['Error'] = 'Invaild Version Please try again later or join.\ndiscord.gg/VERTxGCaFp'
-    }
+  ['BSS'] = {
+    ['__version'] = 1.0
+  }
+  ['AC'] = {
+    ['__version'] = 1.0
   }
 }
