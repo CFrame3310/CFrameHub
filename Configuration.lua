@@ -4,7 +4,7 @@ return {
   },
   ['BSS'] = {
     ['__version'] = 1.0
-  }
+  },
   ['AC'] = {
     ['__version'] = 1.0
   }
