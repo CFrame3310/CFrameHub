@@ -1,3 +1,13 @@
+function loadScript(url)
+  local success, response = pcall(function ()
+    return game:HttpGet(url)
+  end)
+
+  if response == '404: Not Found' then
+    game.StarterGui:SetCore("SendNotification", {Title = 'CFrame Hub', Text = 'Updating Script, please try again in few minutes',Duration = 8})
+  end
+end
+
 local placeid = game.PlaceId
 
 if placeid == 87039211657390 or placeid == 4442272183 or placeid == 128336380114944 then 
