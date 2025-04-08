@@ -13,7 +13,7 @@ return {
       'COFFIN',
       'RUNES',
       'UPDATE',
-      'BETA'
+      'BETA',
     }
   }
 }
