@@ -7,5 +7,13 @@ return {
   },
   ['AC'] = {
     ['__version'] = 2
+    ['Codes']
+      'DUSTS',
+      'Potions',
+      'COFFIN',
+      'RUNES',
+      'UPDATE',
+      'BETA'
+    }
   }
 }
