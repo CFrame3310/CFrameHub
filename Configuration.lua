@@ -6,7 +6,7 @@ return {
     ['__version'] = 1.0
   },
   ['AC'] = {
-    ['__version'] = 2
+    ['__version'] = 2,
     ['Codes']
       'DUSTS',
       'Potions',
